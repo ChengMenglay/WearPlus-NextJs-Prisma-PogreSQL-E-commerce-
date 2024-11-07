@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
-import Navbar from "@/components/navbar/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,15 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider>
-          {/* <Navbar /> */}
-          <ToastContainer
-            position="top-center"
-            hideProgressBar
-            className={"z-50"}
-          />
-          {children}
-        </SessionProvider>
+        <ToastContainer
+          position="top-center"
+          hideProgressBar
+          className={"z-50"}
+        />
+        {children}
       </body>
     </html>
   );

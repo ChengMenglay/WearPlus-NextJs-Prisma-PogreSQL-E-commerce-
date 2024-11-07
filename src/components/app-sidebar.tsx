@@ -1,14 +1,9 @@
 import React from "react";
 import {
   BadgeCheck,
-  Bell,
-  Calendar,
   ChevronsUpDown,
-  CreditCard,
   Home,
-  LogOut,
   Package,
-  Search,
   Settings,
   ShoppingCart,
   UserRoundSearch,
@@ -35,27 +30,36 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
-
-export default function AppSidebar() {
+import { auth } from "@/auth";
+import { getUserInfor } from "@/app/(auth)/actions/authActions";
+import SignOutButton from "./SignOutButton";
+export default async function AppSidebar() {
+  const session = await auth();
+  const users = session?.user && (await getUserInfor());
   const items = [
     {
       title: "Home",
-      url: "/",
+      url: `/`,
       icon: Home,
     },
     {
+      title: "Category",
+      url: `/category`,
+      icon: Package,
+    },
+    {
       title: "Product",
-      url: "/product",
+      url: `/product`,
       icon: Package,
     },
     {
       title: "Order",
-      url: "/order",
+      url: `/order`,
       icon: ShoppingCart,
     },
     {
       title: "Customer",
-      url: "/customer",
+      url: `/customer`,
       icon: UserRoundSearch,
     },
     {
@@ -80,7 +84,7 @@ export default function AppSidebar() {
                   <SidebarMenuButton asChild className=" h-14">
                     <a
                       href={"/dashboard" + item.url}
-                      className="my-2 space-x-2 font-bold"
+                      className="space-x-2 font-bold"
                     >
                       <item.icon style={{ width: "20px", height: "20px" }} />
                       <span className="font-bold text-lg">{item.title}</span>
@@ -103,19 +107,23 @@ export default function AppSidebar() {
                 >
                   <Avatar className="w-10 h-10 rounded-lg">
                     <AvatarImage
-                      src="https://images.pexels.com/photos/2529157/pexels-photo-2529157.jpeg?auto=compress&cs=tinysrgb&w=300"
+                      src={users?.image || "/images/user.png"}
                       alt="shoes"
                     />
                     <AvatarFallback className="rounded-lg">
-                      Shoes
+                      {users?.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-md leading-tight">
                     <span className=" truncate font-semibold">
-                      MenglayCheng
+                      {users?.name}
                     </span>
                     <span className="truncate text-sm text-muted-foreground">
-                      cheng.menglay79@gmail.com
+                      {users?.email}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
@@ -131,42 +139,42 @@ export default function AppSidebar() {
                   <div className="flex items-center gap-2 p-4">
                     <Avatar className="w-10 h-10 rounded-lg">
                       <AvatarImage
-                        src="https://images.pexels.com/photos/2529157/pexels-photo-2529157.jpeg?auto=compress&cs=tinysrgb&w=300"
+                        src={users?.image || "/images/user.png"}
                         alt="shoes"
                       />
                       <AvatarFallback className="rounded-lg">
-                        Shoes
+                        {users?.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-md leading-tight">
                       <span className=" truncate font-semibold">
-                        MenglayCheng
+                        {users?.name}
                       </span>
                       <span className="truncate text-sm text-muted-foreground">
-                        cheng.menglay79@gmail.com
+                        {users?.email}
                       </span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck className="mr-2 h-4 w-4" />
-                    <span>Account</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    <span>Billing</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell className="mr-2 h-4 w-4" />
-                    <span>Notifications</span>
-                  </DropdownMenuItem>
+                  <Link href={"/profile"}>
+                    <DropdownMenuItem className=" cursor-pointer">
+                      <BadgeCheck className="mr-2 h-4 w-4" />
+                      Account
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <SignOutButton
+                    className="w-full h-full flex space-x-4 items-center cursor-pointer"
+                    name="Log out"
+                  />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

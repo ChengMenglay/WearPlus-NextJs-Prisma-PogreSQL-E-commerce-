@@ -77,7 +77,6 @@ export async function registerUser(
     return { status: "error", error: "Something went wrong!" };
   }
 }
-
 export async function getUserId() {
   const session = await auth();
   const userId = session?.user?.id;
@@ -92,4 +91,8 @@ export async function getUserInforById(id: string) {
 export async function getUserByEmail(email: string) {
   const userInfo = await prisma.user.findUnique({ where: { email } });
   return userInfo;
+}
+export async function getUserInfor() {
+  const userId = await getUserId();
+  return prisma.user.findUnique({ where: { id: userId as string } });
 }
