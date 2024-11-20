@@ -1,12 +1,17 @@
 import React from "react";
 import {
   BadgeCheck,
+  ChevronRight,
   ChevronsUpDown,
   Home,
+  Icon,
+  Megaphone,
   Package,
-  Settings,
+  PackageOpen,
+  PencilRuler,
+  ShoppingBasket,
   ShoppingCart,
-  UserRoundSearch,
+  User,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,9 +38,32 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { getUserInfor } from "@/app/(auth)/actions/authActions";
 import SignOutButton from "./SignOutButton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 export default async function AppSidebar() {
   const session = await auth();
   const users = session?.user && (await getUserInfor());
+  const navMain = [
+    {
+      title: "Sales",
+      icon: ShoppingCart,
+      items: [
+        {
+          title: "Customer",
+          url: "/customer",
+          icon: User,
+        },
+        {
+          title: "Order",
+          url: "/order",
+          icon: ShoppingBasket,
+        },
+      ],
+    },
+  ];
   const items = [
     {
       title: "Home",
@@ -43,29 +71,24 @@ export default async function AppSidebar() {
       icon: Home,
     },
     {
+      title: "Billboard",
+      url: `/billboard`,
+      icon: Megaphone,
+    },
+    {
       title: "Category",
       url: `/category`,
       icon: Package,
     },
     {
+      title: "Size",
+      url: `/size`,
+      icon: PencilRuler,
+    },
+    {
       title: "Product",
       url: `/product`,
-      icon: Package,
-    },
-    {
-      title: "Order",
-      url: `/order`,
-      icon: ShoppingCart,
-    },
-    {
-      title: "Customer",
-      url: `/customer`,
-      icon: UserRoundSearch,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
+      icon: PackageOpen,
     },
   ];
   return (
@@ -78,7 +101,7 @@ export default async function AppSidebar() {
             </Link>
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="px-2">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild className=" h-14">
@@ -93,6 +116,56 @@ export default async function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+            {navMain.map((item) => (
+              <Collapsible
+                key={item.title}
+                title={item.title}
+                className="group/collapsible"
+              >
+                <SidebarGroup>
+                  <SidebarGroupLabel
+                    asChild
+                    className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className="flex justify-between h-14">
+                        <span className=" space-x-4 font-bold text-lg flex items-center ">
+                          <item.icon
+                            style={{ width: "20px", height: "20px" }}
+                          />
+                          <span>{item.title}</span>
+                        </span>
+
+                        <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                  </SidebarGroupLabel>
+                  <CollapsibleContent>
+                    <SidebarGroupContent>
+                      <SidebarMenu>
+                        {item.items.map((item) => (
+                          <SidebarMenuItem key={item.title} className="px-8">
+                            <SidebarMenuButton asChild>
+                              <a
+                                className="space-x-2 font-bold "
+                                href={"/dashboard" + item.url}
+                              >
+                                <item.icon
+                                  style={{ width: "20px", height: "20px" }}
+                                />
+                                <span className="font-bold text-lg">
+                                  {item.title}
+                                </span>
+                              </a>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            ))}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

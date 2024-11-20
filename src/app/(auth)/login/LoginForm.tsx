@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -76,12 +75,6 @@ export default function LoginForm() {
           <div className="space-y-2">
             <Button type="submit" className="w-full h-10 font-bold">
               Login
-            </Button>
-            <Button
-              onClick={() => signIn("github")}
-              className="w-full h-10 font-bold"
-            >
-              Sign In with GitHub
             </Button>
           </div>
           <CardDescription className="flex justify-center mt-4">

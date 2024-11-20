@@ -20,3 +20,8 @@ export function handleFormServerErrors<TFieldValues extends FieldValues>(
     setError("root.serverError", { message: errorResponse.error });
   }
 }
+
+export const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
