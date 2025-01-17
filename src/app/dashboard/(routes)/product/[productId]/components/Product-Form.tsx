@@ -35,18 +35,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ImageUpload from "@/components/ui/image-upload";
 
 type ProductFromProps = {
-  initialData: (Product & { images: Image[] }) | null;
-  size: Size[] | null;
+  initialData: (Product & { images: Image[]; sizes: Size[] }) | null;
   category: Category[] | null;
+  size: Size[] | null;
 };
 
 const formSchema = z.object({
   name: z.string().min(1),
   detail: z.string().min(1),
   price: z.coerce.number(),
-  quantity: z.coerce.number(),
+  stock: z.coerce.number(),
+  type: z.string().min(1),
   categoryId: z.string().min(1),
-  sizeId: z.string().min(1),
+  sizes: z.array(z.string()),
   images: z.object({ url: z.string() }).array(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
@@ -54,20 +55,25 @@ const formSchema = z.object({
 type ProductFormValues = z.infer<typeof formSchema>;
 export default function ProductForm({
   initialData,
-  size,
   category,
+  size,
 }: ProductFromProps) {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
-      ? { ...initialData, price: parseFloat(String(initialData?.price)) }
+      ? {
+          ...initialData,
+          sizes: initialData.sizes.map((item) => item.id),
+          price: parseFloat(String(initialData?.price)),
+        }
       : {
           name: "",
           detail: "",
           price: 0,
-          quantity: 0,
+          stock: 0,
+          type: "",
           categoryId: "",
-          sizeId: "",
+          sizes: [],
           images: [],
           isFeatured: false,
           isArchived: false,
@@ -108,7 +114,7 @@ export default function ProductForm({
   };
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex overflow-y-auto items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
           <Button
@@ -125,7 +131,7 @@ export default function ProductForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className=" space-y-8 w-full"
+          className=" space-y-2 w-full"
         >
           <FormField
             control={form.control}
@@ -153,7 +159,7 @@ export default function ProductForm({
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-2">
             <FormField
               control={form.control}
               name="name"
@@ -173,15 +179,15 @@ export default function ProductForm({
             />
             <FormField
               control={form.control}
-              name="quantity"
+              name="stock"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quantity</FormLabel>
+                  <FormLabel>Stock</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isloading}
                       type="number"
-                      placeholder="Product quantity"
+                      placeholder="Product stock"
                       {...field}
                     />
                   </FormControl>
@@ -224,7 +230,7 @@ export default function ProductForm({
               )}
             />
           </div>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-x-8">
             <FormField
               control={form.control}
               name="categoryId"
@@ -259,10 +265,10 @@ export default function ProductForm({
             />
             <FormField
               control={form.control}
-              name="sizeId"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size</FormLabel>
+                  <FormLabel>Type</FormLabel>
                   <Select
                     disabled={isloading}
                     onValueChange={field.onChange}
@@ -272,23 +278,53 @@ export default function ProductForm({
                     <SelectTrigger>
                       <SelectValue
                         defaultValue={field.value}
-                        placeholder="Select size"
+                        placeholder="Select type"
                       />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Size</SelectLabel>
-                        {size?.map((item) => (
-                          <SelectItem key={item.id} value={item.id}>
-                            {item.name}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value={"Men"}>Men's shoes</SelectItem>
+                        <SelectItem value={"Women"}>Women's shoes</SelectItem>
+                        <SelectItem value={"Kids"}>Kid's shoes</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="sizes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size</FormLabel>
+                  <FormControl>
+                    <div className="space-y-2">
+                      {size?.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            checked={field.value.includes(item.id)} // Check if the current size is selected
+                            onCheckedChange={(checked) => {
+                              // Handle adding/removing the size from the selected array
+                              const updatedSizes = checked
+                                ? [...field.value, item.id] // Add size
+                                : field.value.filter((id) => id !== item.id); // Remove size
+                              field.onChange(updatedSizes); // Update form field with selected sizes
+                            }}
+                          />
+                          <span>{item.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="isFeatured"
@@ -334,7 +370,7 @@ export default function ProductForm({
               )}
             />
           </div>
-          <Button className="ml-auto" type="submit">
+          <Button disabled={isloading} className="ml-auto" type="submit">
             {action}
           </Button>
         </form>

@@ -7,17 +7,18 @@ import { formatter } from "@/lib/utils";
 
 export default async function ProductPage() {
   const products = await prisma.product.findMany({
-    include: { size: true, category: true },
+    include: { sizes: { include: { size: true } }, category: true },
     orderBy: { createAt: "desc" },
   });
   const formattedProduct: ProductColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
     detail: item.detail,
-    price: formatter.format(item.price.toNumber()),
-    quantity: item.quantity,
+    price: formatter.format(Number(item.price)),
+    stock: item.stock,
+    type: item.type,
     category: item.category.name,
-    size: item.size.name,
+    size: item.sizes.map((size) => size.size.value),
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
     createAt: format(item.createAt, "MMMM do, yyyy"),

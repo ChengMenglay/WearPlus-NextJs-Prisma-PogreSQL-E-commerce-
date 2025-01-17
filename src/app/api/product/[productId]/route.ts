@@ -14,7 +14,7 @@ export async function GET(
       include: {
         images: true,
         category: true,
-        size: true,
+        sizes: { include: { size: true } },
       },
     });
     return NextResponse.json(product);
@@ -30,49 +30,72 @@ export async function PATCH(
 ) {
   try {
     const body = await req.json();
-    const { name, categoryId, detail, price, quantity, sizeId, images } = body;
+    const { name, categoryId, detail, price, stock, sizes, type, images } =
+      body;
+
     if (!params.productId) {
       return new NextResponse("Product Id is required", { status: 400 });
     }
-    if (!name) return NextResponse.json("Name is require", { status: 400 });
+    if (!name) return NextResponse.json("Name is required", { status: 400 });
     if (!categoryId)
-      return NextResponse.json("Category id is require", { status: 400 });
-    if (!detail) return NextResponse.json("Detail is require", { status: 400 });
-    if (!price) return NextResponse.json("Price is require", { status: 400 });
-    if (!quantity)
-      return NextResponse.json("Quantity is require", { status: 400 });
-    if (!sizeId)
-      return NextResponse.json("Size id is require", { status: 400 });
+      return NextResponse.json("Category ID is required", { status: 400 });
+    if (!detail)
+      return NextResponse.json("Detail is required", { status: 400 });
+    if (!price) return NextResponse.json("Price is required", { status: 400 });
+    if (!stock) return NextResponse.json("Stock is required", { status: 400 });
+    if (!type) return NextResponse.json("Type is required", { status: 400 });
+    if (!Array.isArray(sizes) || !sizes.length)
+      return NextResponse.json("Sizes are required", { status: 400 });
     if (!images || !images.length)
-      return NextResponse.json("Images are require", { status: 400 });
-    await prisma.product.update({
+      return NextResponse.json("Images are required", { status: 400 });
+
+    // Validate category
+    const categoryExists = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+    if (!categoryExists) {
+      return NextResponse.json("Category does not exist", { status: 400 });
+    }
+
+    // Validate sizes
+    const sizeIdsExist = await prisma.size.findMany({
+      where: { id: { in: sizes } },
+    });
+    if (sizeIdsExist.length !== sizes.length) {
+      return NextResponse.json("Some size IDs are invalid", { status: 400 });
+    }
+
+    // Update product
+    const updatedProduct = await prisma.product.update({
       where: { id: params.productId },
       data: {
         name,
         categoryId,
         detail,
         price,
-        quantity,
-        sizeId,
+        stock,
+        type,
+        sizes: {
+          deleteMany: {},
+          createMany: { data: sizes.map((sizeId) => ({ sizeId })) },
+        },
         isFeatured: body.isFeatured ?? false,
         isArchived: body.isArchived ?? false,
         images: {
           deleteMany: {},
-        },
-      },
-    });
-    const product = await prisma.product.update({
-      where: { id: params.productId },
-      data: {
-        images: {
           createMany: {
-            data: [...images.map((image: { url: string }) => image)],
+            data: images.map((image: { url: string }) => image),
           },
         },
       },
+      include: {
+        images: true,
+        category: true,
+        sizes: { include: { size: true } },
+      },
     });
 
-    return NextResponse.json(product);
+    return NextResponse.json(updatedProduct);
   } catch (error) {
     console.log("[PRODUCT_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });

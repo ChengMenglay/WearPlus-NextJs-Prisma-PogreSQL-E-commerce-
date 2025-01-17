@@ -43,7 +43,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
         {value.map((url, idx) => (
           <div
             key={idx}
-            className="relative w-[200px] h-[200px] rounded-md overflow-hidden"
+            className="relative w-[150px] h-[150px] rounded-md overflow-hidden"
           >
             <div className="z-10 absolute top-2 right-2">
               <Button
