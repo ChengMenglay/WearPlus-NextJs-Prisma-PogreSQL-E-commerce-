@@ -4,8 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { OrderColumn } from "./components/columns";
 import { ClientOrder } from "./components/client";
 import { formatter } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Header from "@/components/Header";
 
 export default async function OrderPage() {
   const Orders = await prisma.order.findMany({

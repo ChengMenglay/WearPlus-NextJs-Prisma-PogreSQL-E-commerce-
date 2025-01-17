@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
-import EditProfile from "./EditProfile";
 import SignOutButton from "@/components/SignOutButton";
 import { getUserInfor } from "@/app/(auth)/actions/authActions";
+import EditProfile from "./EditProfile";
 
 export default async function Profile() {
   const users = await getUserInfor();

@@ -19,11 +19,11 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { billboard } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import ImageUpload from "@/components/ui/image-upload";
 
 type BillboardFormProps = {
-  initialData: billboard | null;
+  initialData: Billboard | null;
 };
 
 const formSchema = z.object({

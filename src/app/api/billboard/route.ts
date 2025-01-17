@@ -1,6 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
+export async function GET(req: Request) {
+  try {
+    const billboard = await prisma.billboard.findMany();
+    return NextResponse.json(billboard);
+  } catch (error) {
+    console.log("[BILLBOARD_GET]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
 export async function POST(req: Request) {
   try {
     const body = await req.json();

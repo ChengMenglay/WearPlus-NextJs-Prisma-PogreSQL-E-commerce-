@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, categoryId, detail, price, quantity, sizeId, images } = body;
+    const { name, categoryId, detail, price, stock, type, sizes, images } =
+      body;
 
     if (!name) return NextResponse.json("Name is required", { status: 400 });
     if (!categoryId)
@@ -12,10 +13,10 @@ export async function POST(req: Request) {
     if (!detail)
       return NextResponse.json("Detail is required", { status: 400 });
     if (!price) return NextResponse.json("Price is required", { status: 400 });
-    if (!quantity)
-      return NextResponse.json("Quantity is required", { status: 400 });
-    if (!sizeId)
-      return NextResponse.json("Size ID is required", { status: 400 });
+    if (!stock) return NextResponse.json("Stock is required", { status: 400 });
+    if (!type) return NextResponse.json("Type is required", { status: 400 });
+    if (!Array.isArray(sizes) || !sizes.length)
+      return NextResponse.json("Sizes are required", { status: 400 });
     if (!Array.isArray(images) || !images.length)
       return NextResponse.json("Images are required", { status: 400 });
 
@@ -25,8 +26,11 @@ export async function POST(req: Request) {
         categoryId,
         detail,
         price,
-        quantity,
-        sizeId,
+        stock,
+        type,
+        sizes: {
+          createMany: { data: sizes.map((sizeId) => ({ sizeId })) },
+        },
         isFeatured: body.isFeatured ?? false,
         isArchived: body.isArchived ?? false,
         images: {
@@ -50,19 +54,24 @@ export async function GET(req: Request) {
     const categoryId = searchParams.get("categoryId") || undefined;
     const sizeId = searchParams.get("sizeId") || undefined;
     const isFeatured = searchParams.get("isFeatured") ? true : undefined;
-
+    const limit = searchParams.get("limit");
+    const limitValue = limit ? Number(limit) : undefined;
+    if (limit && isNaN(limitValue as number)) {
+      return new NextResponse("Invalid limit value", { status: 400 });
+    }
     const product = await prisma.product.findMany({
       where: {
         categoryId,
-        sizeId,
+        sizes: sizeId ? { some: { sizeId } } : undefined,
         isFeatured,
         isArchived: false,
       },
       include: {
         images: true,
         category: true,
-        size: true,
+        sizes: { include: { size: true } },
       },
+      take: limitValue,
       orderBy: { createAt: "desc" }, // Ensure `createdAt` exists in your schema
     });
 

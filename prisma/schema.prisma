@@ -36,14 +36,14 @@ model Category{
   products Product[]
 }
 
-model Size{
-  id String @id @default(cuid())
-  name String
-  value String
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  products Product[]
-}
+  model Size{
+    id String @id @default(cuid())
+    name String
+    value String
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    products ProductSize[]
+  }
 
 model Product{
   id String @id @default(cuid())
@@ -52,9 +52,9 @@ model Product{
   name String
   detail String
   price Decimal
-  quantity Int
-  sizeId String
-  size Size @relation(fields: [sizeId], references: [id])
+  stock Int
+  type String
+  sizes ProductSize[]
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)
   images Image[]
@@ -63,6 +63,17 @@ model Product{
   updateAt DateTime @updatedAt
 
   @@index([categoryId])
+}
+
+model ProductSize{
+  id  String @id @default(cuid())
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  sizeId String
+  size Size @relation(fields: [sizeId], references: [id])
+
+  @@unique([productId, sizeId]) // Ensure a product-size combination is unique
+  @@index([productId])
   @@index([sizeId])
 }
 
