@@ -18,45 +18,62 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 type ProductDetailProps = {
   product: Product | null;
 };
+
 export default function ProductDetailComponent({
   product,
 }: ProductDetailProps) {
   const [seletedShoes, setSeletedShoes] = useState(product?.images[0].url);
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <div className="grid md:grid-cols-2 grid-cols-1 ">
-      <div className="p-4">
-        <h1 className="text-3xl font-bold">{product?.name}</h1>
+    <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+      <div className=" space-y-4">
+        <h1 className="lg:text-3xl md:text-2xl text-3xl font-bold">
+          {product?.name}
+        </h1>
         <p className=" font-bold text-gray-400">
           {product?.type === "Men"
             ? "Men's shoes"
             : product?.type === "Women"
-            ? "Wowen's shoes"
+            ? "Women's shoes"
             : product?.type === "Kids"
             ? "Kid's shoes"
             : null}
         </p>
-        <div className="mb-4 lg:w-3/4 w-full space-y-2">
-          <div className="relative aspect-square">
+        <div className="mb-4 lg:w-3/4 w-full p-4">
+          <div className="relative  aspect-square">
             <Image
-              fill
-              alt={product?.name as string}
               src={seletedShoes as string}
+              alt={product?.name as string}
+              fill
+              className="object-contain object-center"
+              quality={100} // Use higher quality for better image
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
             />
           </div>
-          <h1 className="text- font-bold p-2">Frame</h1>
+          <h1 className="relative text-lg font-bold">Frame</h1>
           <div className="flex gap-10">
             {product?.images.map((img) => (
               <div
                 key={img.id}
-                className="relative w-[120px] h-[120px] cursor-pointer"
+                className="relative w-[140px] h-[140px] cursor-pointer"
                 onClick={() => setSeletedShoes(img.url)}
               >
-                <Image fill alt={img.id as string} src={img.url as string} />
+                <Image
+                  src={img.url as string}
+                  alt={img.id as string}
+                  fill
+                  className="object-contain object-center"
+                  quality={100} // Use higher quality for better image
+                  sizes="(max-width: 768px) 50vw, 15vw" // Responsive image sizes for better performance
+                  priority
+                />
               </div>
             ))}
           </div>
@@ -90,16 +107,18 @@ export default function ProductDetailComponent({
             {formatter.format(Number(product?.price))}
           </p>
           <div className="flex gap-4 mt-10">
-            <Button>Add to card</Button>
+            <Button>Add to cart</Button>
             <Button variant={"outline"}>Buy Now</Button>
           </div>
         </Card>
-        <Collapsible>
-          <Card className="h-14">
-            <CollapsibleTrigger className="w-full h-full text-start px-4 flex justify-between items-center">
-              Product Detail <ChevronDown />
+        <Collapsible onClick={() => setIsOpen(!isOpen)} defaultOpen={isOpen}>
+          <Card className=" rounded-lg shadow-sm">
+            <CollapsibleTrigger className="w-full h-full text-start px-6 py-4 flex justify-between items-center hover:text-gray-900 focus:outline-none">
+              Product Details {isOpen ? <ChevronDown /> : <ChevronUp />}
             </CollapsibleTrigger>
-            <CollapsibleContent>{product?.detail}</CollapsibleContent>
+            <CollapsibleContent className="px-6 py-4">
+              {product?.detail}
+            </CollapsibleContent>
           </Card>
         </Collapsible>
       </div>

@@ -12,6 +12,11 @@ const HomePage = async () => {
     categoryId: "cm37mw7pg000184wrfssnowyv",
     limit: 5,
   });
+  const nike = await getProducts({
+    isFeatured: true,
+    categoryId: "cm37lltfl000016e7ei0nsd68",
+    limit: 5,
+  });
   return (
     <div className="px-2">
       <Billboard billboards={billboards} />
@@ -20,6 +25,9 @@ const HomePage = async () => {
       </div>
       <div className="px-4 my-4">
         <ProductList title="Jardan" products={jardan} />
+      </div>
+      <div className="px-4 my-4">
+        <ProductList title="Nike" products={nike} />
       </div>
     </div>
   );

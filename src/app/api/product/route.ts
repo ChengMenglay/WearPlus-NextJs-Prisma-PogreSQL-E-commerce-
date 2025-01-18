@@ -51,6 +51,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const productId = searchParams.get("productId") || undefined;
     const categoryId = searchParams.get("categoryId") || undefined;
     const sizeId = searchParams.get("sizeId") || undefined;
     const isFeatured = searchParams.get("isFeatured") ? true : undefined;
@@ -61,6 +62,7 @@ export async function GET(req: Request) {
     }
     const product = await prisma.product.findMany({
       where: {
+        id: productId,
         categoryId,
         sizes: sizeId ? { some: { sizeId } } : undefined,
         isFeatured,
