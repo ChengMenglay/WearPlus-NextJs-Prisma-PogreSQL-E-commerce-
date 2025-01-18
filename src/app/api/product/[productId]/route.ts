@@ -84,7 +84,7 @@ export async function PATCH(
         images: {
           deleteMany: {},
           createMany: {
-            data: images.map((image: { url: string }) => image),
+            data: images.map((image: { url: string }) => ({ url: image.url })),
           },
         },
       },

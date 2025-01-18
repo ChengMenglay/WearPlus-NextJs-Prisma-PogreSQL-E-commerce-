@@ -64,7 +64,7 @@ export default function ProductForm({
       ? {
           ...initialData,
           sizes: initialData.sizes.map((item) => item.id),
-          price: parseFloat(String(initialData?.price)),
+          price: Number(initialData?.price),
         }
       : {
           name: "",
@@ -97,6 +97,7 @@ export default function ProductForm({
       router.push(`/dashboard/product`);
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);
@@ -109,6 +110,7 @@ export default function ProductForm({
       router.push(`/dashboard/product`);
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong!");
     }
   };
@@ -283,9 +285,9 @@ export default function ProductForm({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value={"Men"}>Men's shoes</SelectItem>
-                        <SelectItem value={"Women"}>Women's shoes</SelectItem>
-                        <SelectItem value={"Kids"}>Kid's shoes</SelectItem>
+                        <SelectItem value={"Men"}>Men shoes</SelectItem>
+                        <SelectItem value={"Women"}>Women shoes</SelectItem>
+                        <SelectItem value={"Kids"}>Kid shoes</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -334,10 +336,9 @@ export default function ProductForm({
                     <Checkbox
                       disabled={isloading}
                       checked={field.value}
-                      // @ts-ignore
                       onCheckedChange={field.onChange}
                     />
-                  </FormControl>{" "}
+                  </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>Featured</FormLabel>
                     <FormDescription>
@@ -356,7 +357,6 @@ export default function ProductForm({
                     <Checkbox
                       disabled={isloading}
                       checked={field.value}
-                      // @ts-ignore
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
