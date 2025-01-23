@@ -1,7 +1,5 @@
 import React from "react";
-import getProducts, {
-  getProductById,
-} from "../../../../../actions/get-products";
+import getProducts from "../../../../../actions/get-products";
 import ProductDetail from "./ProductDetail";
 import ProductList from "@/components/ProductList";
 
@@ -11,13 +9,13 @@ type ProductDetailPageProps = {
 export default async function ProductDetailPage({
   params,
 }: ProductDetailPageProps) {
-  const product = await getProductById(params.shoesId);
+  const product = await getProducts({ productId: params.shoesId });
   const relatedProducts = await getProducts({
-    categoryId: product.category.id,
+    categoryId: product[0].category.id,
   });
   return (
     <div className="container mx-auto px-4 mt-10">
-      <ProductDetail product={product} />
+      <ProductDetail product={product[0]} />
       <div>
         <ProductList products={relatedProducts} title="Related Products" />
       </div>

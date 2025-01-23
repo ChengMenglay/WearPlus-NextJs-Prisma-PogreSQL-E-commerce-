@@ -10,7 +10,7 @@ export default async function DashbordLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full min-h-screen">
+      <main className="w-full ">
         <SidebarTrigger />
         {children}
       </main>

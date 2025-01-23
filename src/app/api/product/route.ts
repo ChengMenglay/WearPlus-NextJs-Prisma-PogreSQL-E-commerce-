@@ -66,6 +66,7 @@ export async function GET(req: Request) {
         categoryId,
         sizes: sizeId ? { some: { sizeId } } : undefined,
         isFeatured,
+        status: "Active",
         isArchived: false,
       },
       include: {

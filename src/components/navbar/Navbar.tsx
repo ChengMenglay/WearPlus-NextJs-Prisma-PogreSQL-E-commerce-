@@ -1,12 +1,12 @@
 import React from "react";
 import { Card } from "../ui/card";
-import { Search, ShoppingCart } from "lucide-react";
 import UserNavbar from "./UserMenu";
 import { auth } from "@/auth";
 import { getUserInfor } from "@/app/(auth)/actions/authActions";
 import Link from "next/link";
 import ManuLink from "./ManuLink";
 import getAllCategory from "../../../actions/get-category";
+import NavbarAction from "./navbar-action";
 
 export default async function Navbar() {
   const session = await auth();
@@ -22,8 +22,7 @@ export default async function Navbar() {
           <ManuLink categories={categories} />
         </div>
         <div className="flex space-x-4 items-center justify-center">
-          <Search size={18} />
-          <ShoppingCart size={18} />
+          <NavbarAction />
           {users ? (
             <UserNavbar
               id={users.id}
