@@ -10,7 +10,7 @@ export async function GET(
       return new NextResponse("Product Id is required", { status: 400 });
     }
     const product = await prisma.product.findUnique({
-      where: { id: params.productId },
+      where: { id: params.productId, status: "Active", isArchived: true },
       include: {
         images: true,
         category: true,
@@ -110,6 +110,9 @@ export async function DELETE(
     if (!params.productId) {
       return new NextResponse("Product Id is required", { status: 400 });
     }
+    await prisma.productSize.deleteMany({
+      where: { productId: params.productId },
+    });
     const product = await prisma.product.delete({
       where: { id: params.productId },
     });

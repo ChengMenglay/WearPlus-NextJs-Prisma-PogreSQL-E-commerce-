@@ -25,14 +25,15 @@ export async function PATCH(
 ) {
   try {
     const body = await req.json();
-    const { name } = body;
+    const { name, url } = body;
     if (!params.categoryId) {
       return new NextResponse("Category Id is required", { status: 400 });
     }
     if (!name) return new NextResponse("Name is required", { status: 400 });
+    if (!url) return new NextResponse("Image is required", { status: 400 });
     const category = await prisma.category.update({
       where: { id: params.categoryId },
-      data: { name },
+      data: { name, url },
     });
     return NextResponse.json(category);
   } catch (error) {

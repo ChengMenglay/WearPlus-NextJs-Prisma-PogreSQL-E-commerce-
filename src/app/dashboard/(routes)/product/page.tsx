@@ -21,6 +21,7 @@ export default async function ProductPage() {
     size: item.sizes.map((size) => size.size.value),
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
+    status: item.status as string,
     createAt: format(item.createAt, "MMMM do, yyyy"),
   }));
   return (

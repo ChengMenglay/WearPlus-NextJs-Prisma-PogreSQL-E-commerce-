@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import CellAction from "./cell-action";
+import { Button } from "@/components/ui/button";
 
 export type ProductColumn = {
   id: string;
@@ -14,6 +15,7 @@ export type ProductColumn = {
   size: string[];
   isFeatured: boolean;
   isArchived: boolean;
+  status?: string;
   createAt: string;
 };
 
@@ -49,6 +51,16 @@ export const columns: ColumnDef<ProductColumn>[] = [
   {
     accessorKey: "createAt",
     header: "Date",
+  },
+  {
+    accessorKey: "status",
+    cell: ({ row }) => (
+      <Button
+        variant={row.original.status === "Active" ? "secondary" : "destructive"}
+      >
+        {row.original.status}
+      </Button>
+    ),
   },
   {
     accessorKey: "actions",

@@ -4,9 +4,10 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name } = body;
+    const { name, url } = body;
     if (!name) return NextResponse.json("Name is require", { status: 400 });
-    const category = await prisma.category.create({ data: { name } });
+    if (!url) return NextResponse.json("Image is require", { status: 400 });
+    const category = await prisma.category.create({ data: { name, url } });
     return NextResponse.json(category);
   } catch (error) {
     console.log("[CATEGORY_POST]", error);
@@ -14,9 +15,18 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const category = await prisma.category.findMany();
+    const { searchParams } = new URL(req.url);
+    const limit = searchParams.get("limit") || null;
+    const limitValue = limit ? Number(limit) : undefined;
+    if (limit && isNaN(limitValue as number)) {
+      return new NextResponse("Invalid limit value", { status: 400 });
+    }
+    const category = await prisma.category.findMany({
+      take: limitValue,
+      orderBy: { createAt: "desc" },
+    });
     return NextResponse.json(category);
   } catch (error) {
     console.log("[CATEGORY_GET]", error);

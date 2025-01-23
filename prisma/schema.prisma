@@ -31,6 +31,7 @@ model Billboard{
 model Category{
   id String @id @default(cuid())
   name String
+  url String?
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   products Product[]
@@ -58,6 +59,7 @@ model Product{
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)
   images Image[]
+  status String? @default("Active")
   orderItems OrderItem[]
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
