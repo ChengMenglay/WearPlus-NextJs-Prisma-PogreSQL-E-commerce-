@@ -19,6 +19,7 @@ export interface Product {
   type: string;
   stock: number;
   sizes: ProductSize[];
+  quantity?: number;
   isFeatured: boolean;
   images: Image[];
 }

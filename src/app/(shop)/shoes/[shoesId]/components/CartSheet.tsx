@@ -14,12 +14,14 @@ import { formatter } from "@/lib/utils";
 import { Product } from "../../../../../../types";
 import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function CartSheet() {
   const { isOpen: sheetIsOpen, onOpen, onClose } = useOpenSheet();
   const [total, setTotal] = useState(0);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const cart = useCart();
+  const router = useRouter();
 
   // Function to handle quantity updates and recalculate the total
   const handleCalculateQty = useCallback(
@@ -49,6 +51,18 @@ export default function CartSheet() {
     [cart.items]
   ); // Include cart.items to trigger recalculations when cart changes
 
+  const handleCheckout = () => {
+    const newCart: Product[] = [];
+    cart.items.map((item) =>
+      newCart.push({ ...item, quantity: quantities[item.id] || 1 })
+    );
+    cart.removeAll();
+    newCart.forEach((product) => {
+      cart.addItem(product); // Call addItem for each product individually
+    });
+    onClose();
+    router.push("/checkout");
+  };
   return (
     <Sheet
       open={sheetIsOpen as boolean}
@@ -64,9 +78,11 @@ export default function CartSheet() {
         <SheetFooter>
           {cart.items.length > 0 && (
             <div className="mt-4 space-y-2">
-              <p className=" font-bold">Total: {formatter.format(total)}</p>
+              <p className=" font-bold text-red-600">
+                Total: {formatter.format(total)}
+              </p>
               <div className="flex justify-end">
-                <Button>Checkout</Button>
+                <Button onClick={handleCheckout}>Checkout</Button>
               </div>
             </div>
           )}
