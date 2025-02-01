@@ -67,7 +67,7 @@ export default function CartItem({ handleCalculateQty }: CartItemProps) {
             <div className="flex flex-col space-y-4">
               <div className="space-y-1">
                 <h1 className="text-sm font-semibold">{item.name}</h1>
-                <p className="font-bold">
+                <p className="font-bold text-red-600">
                   {formatter.format(Number(item.price))}
                 </p>
                 <p>Size: {item.sizes[0].size.name}</p>

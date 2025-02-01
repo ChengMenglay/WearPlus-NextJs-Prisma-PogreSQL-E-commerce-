@@ -20,6 +20,7 @@ model User {
   role          String @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order Order[]
 }
 model Billboard{
   id String @id @default(cuid())
@@ -104,16 +105,39 @@ model Address{
   @@index([userId])
 }
 
+model Province{
+  id String @id @default(cuid())
+  name String
+}
+
+model Delivery{
+  id String @id @default(cuid())
+  logo_url String
+  name String
+  price Decimal
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order Order[]
+}
+
 model Order{
   id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
   addressId String
   address Address @relation(fields: [addressId], references: [id])
+  note String?
+  deliveryId String
+  delivery Delivery @relation(fields: [deliveryId], references: [id])
+  payment String?
   status String @default("Pending")
   isPaid Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([deliveryId])
   @@index([addressId])
 }
 
@@ -124,7 +148,7 @@ model OrderItem{
   productId String
   product Product @relation(fields: [productId], references: [id])
   quantity Int
-
+  size String
   @@index([productId])
   @@index([orderId])
 }
