@@ -3,7 +3,13 @@
 import NoResult from "@/components/no-result";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -20,7 +26,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Address } from "../../../../../types";
 
+type CheckoutProps = {
+  addresses: Address[] | null;
+};
 const schema = z.object({
   addressId: z.string().min(1, "Please select an address!"),
   deliveryId: z.string().min(1, "Please select a delivery!"),
@@ -54,9 +64,11 @@ const deliveryOptions = [
   },
 ];
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ addresses }: CheckoutProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedDelivery, setSelectedDelivery] = useState(deliveryOptions[0]);
+  const [selectedAddress, setSelectedaddress] = useState<Address | null>(null);
   const router = useRouter();
 
   const form = useForm<FormSchemaValue>({
@@ -88,40 +100,79 @@ export default function CheckoutForm() {
             control={form.control}
             name="addressId"
             render={({ field }) => (
-              <FormItem className="flex items-center justify-between">
-                <FormLabel className="flex items-center text-lg">
-                  <MapPin className="w-4 h-4 mr-1" /> Address
-                </FormLabel>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="destructive">Select address</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[400px] min-h-[300px] p-4">
-                    <h1 className="text-sm font-semibold">Select an address</h1>
-                    <div className="space-y-10 flex flex-col justify-between">
-                      <NoResult />
-                      <Button onClick={() => router.push("/profile/address")}>
-                        Create address <Plus className="ml-1" />
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+              <FormItem className="flex flex-col justify-center">
+                <div className="flex justify-between">
+                  <FormLabel className="flex items-center text-lg">
+                    <MapPin className="w-4 h-4 mr-1" /> Address
+                  </FormLabel>
+                  <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+                    <DialogTrigger asChild>
+                      <Button variant="destructive">Select address</Button>
+                    </DialogTrigger>
+                    <DialogContent className="gap-4">
+                      <DialogTitle className="text-sm font-semibold">
+                        Select an address
+                      </DialogTitle>
+                      <div className=" space-y-2">
+                        {(addresses?.length as number) > 0 &&
+                          addresses?.map((item) => (
+                            <Card
+                              onClick={() => {
+                                setSelectedaddress(item);
+                                form.setValue("addressId", item.id);
+                                form.trigger("addressId");
+                                setIsOpen(false);
+                              }}
+                              className="border cursor-pointer p-3 bg-[#e3e1e1] flex justify-between items-center"
+                            >
+                              <div>
+                                <h1 className="font-bold text-lg">
+                                  {item.province}
+                                </h1>
+                                <p className="text-sm">{item.addressDetail}</p>
+                              </div>
+                              <div>
+                                <h1 className="font-bold text-lg">
+                                  {item.user.name}
+                                </h1>
+                                <p className="text-sm">
+                                  {item.user.phoneNumber}
+                                </p>
+                              </div>
+                            </Card>
+                          ))}
+                        {addresses?.length === 0 && <NoResult />}
+                      </div>
+                      <DialogFooter className="mt-20">
+                        <Button onClick={() => router.push("/profile/address")}>
+                          Create address <Plus className="ml-1" />
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
           {/* Address Card */}
-          <Card className="border p-4 my-3 bg-slate-800 text-white flex justify-between items-center">
-            <div>
-              <h1 className="font-bold text-lg">Phnom Penh</h1>
-              <p className="text-sm">Chroy Chongva</p>
-            </div>
-            <div>
-              <h1 className="font-bold text-lg">Cheng Menglay</h1>
-              <p className="text-sm">089240766</p>
-            </div>
-          </Card>
+          {selectedAddress && (
+            <Card className="border p-3 my-2 bg-[#e3e1e1] flex justify-between items-center">
+              <div>
+                <h1 className="font-bold text-lg">
+                  {selectedAddress?.province}
+                </h1>
+                <p className="text-sm">{selectedAddress?.addressDetail}</p>
+              </div>
+              <div>
+                <h1 className="font-bold text-lg">
+                  {selectedAddress?.user.name}
+                </h1>
+                <p className="text-sm">{selectedAddress?.user.phoneNumber}</p>
+              </div>
+            </Card>
+          )}
 
           <Separator className="my-4" />
 
@@ -141,9 +192,7 @@ export default function CheckoutForm() {
               </FormItem>
             )}
           />
-
           <Separator className="my-4" />
-
           {/* Delivery Selection */}
           <FormField
             control={form.control}
@@ -185,6 +234,22 @@ export default function CheckoutForm() {
             )}
           />
 
+          <Separator className="mt-4 mb-8" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h1 className="font-semibold text-lg">Sub Total</h1>
+              <p className="font-bold text-red-600">$12.00</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <h1 className="font-semibold text-lg">Delivery</h1>
+              <p className="font-bold text-red-600">$00.00</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <h1 className="font-semibold text-lg">Total</h1>
+              <p className="font-bold text-red-600">$12.00</p>
+            </div>
+          </div>
+          <Separator className="mb-4 mt-8" />
           {/* Submit Button */}
           <div className="mt-6 flex justify-end">
             <Button type="submit">

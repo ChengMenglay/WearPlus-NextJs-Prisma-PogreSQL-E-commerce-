@@ -8,7 +8,7 @@ import EditProfile from "./EditProfile";
 export default async function Profile() {
   const users = await getUserInfor();
   return (
-    <Card className=" h-full md:h-[80vh]">
+    <Card className=" h-full md:h-[80vh] ">
       <CardHeader className="text-xl font-semibold">
         <div className="flex justify-between items-center">
           <div>
@@ -21,7 +21,7 @@ export default async function Profile() {
         </div>
       </CardHeader>
       <Separator />
-      <CardContent className="mt-2">
+      <CardContent className="mt-2 px-4">
         <EditProfile users={users} />
       </CardContent>
     </Card>

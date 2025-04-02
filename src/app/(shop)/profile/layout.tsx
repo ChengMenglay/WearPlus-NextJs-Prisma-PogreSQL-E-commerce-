@@ -6,7 +6,9 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
       <div className="row-span-2 lg:col-span-2 md:col-span-4 overflow-x-auto md:overflow-visible">
         <ProfileSidebar />
       </div>
-      <div className="row-span-10 lg:col-span-10 md:col-span-8">{children}</div>
+      <div className="row-span-10 lg:col-span-10 md:col-span-8 overflow-x-auto md:overflow-visible">
+        {children}
+      </div>
     </div>
   );
 }

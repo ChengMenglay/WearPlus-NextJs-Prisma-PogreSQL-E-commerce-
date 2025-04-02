@@ -15,11 +15,14 @@ import { Product } from "../../../../../../types";
 import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { CgSpinnerTwoAlt } from "react-icons/cg";
 
 export default function CartSheet() {
   const { isOpen: sheetIsOpen, onOpen, onClose } = useOpenSheet();
   const [total, setTotal] = useState(0);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [isLoading, setIsLoading] = useState(false);
   const cart = useCart();
   const router = useRouter();
 
@@ -52,16 +55,23 @@ export default function CartSheet() {
   ); // Include cart.items to trigger recalculations when cart changes
 
   const handleCheckout = () => {
-    const newCart: Product[] = [];
-    cart.items.map((item) =>
-      newCart.push({ ...item, quantity: quantities[item.id] || 1 })
-    );
-    cart.removeAll();
-    newCart.forEach((product) => {
-      cart.addItem(product); // Call addItem for each product individually
-    });
-    onClose();
-    router.push("/checkout");
+    try {
+      setIsLoading(true);
+      const newCart: Product[] = [];
+      cart.items.map((item) =>
+        newCart.push({ ...item, quantity: quantities[item.id] || 1 })
+      );
+      cart.removeAll();
+      newCart.forEach((product) => {
+        cart.addItem(product); // Call addItem for each product individually
+      });
+      onClose();
+      router.push("/checkout");
+    } catch (error) {
+      toast.error("Something went wrong that can not process the checkout!");
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <Sheet
@@ -82,7 +92,10 @@ export default function CartSheet() {
                 Total: {formatter.format(total)}
               </p>
               <div className="flex justify-end">
-                <Button onClick={handleCheckout}>Checkout</Button>
+                <Button disabled={isLoading} onClick={handleCheckout}>
+                  {isLoading && <CgSpinnerTwoAlt className="animate-spin" />}
+                  <span>{isLoading ? "Loading..." : "Checkout"}</span>
+                </Button>
               </div>
             </div>
           )}

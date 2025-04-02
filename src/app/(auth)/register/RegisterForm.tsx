@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,12 +11,13 @@ import { Label } from "@/components/ui/label";
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../actions/authActions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { handleFormServerErrors } from "@/lib/utils";
+import { CgSpinnerTwoAlt } from "react-icons/cg";
 
 export default function RegisterForm() {
   const {
@@ -30,29 +30,36 @@ export default function RegisterForm() {
     mode: "onTouched",
   });
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmitted = async (data: RegisterSchema) => {
-    const result = await registerUser(data);
-    if (result.status === "error") {
-      handleFormServerErrors(result, setError);
+    try {
+      setIsLoading(true);
+      const result = await registerUser(data);
+      if (result.status === "error") {
+        handleFormServerErrors(result, setError);
+      }
+      toast.success("Registered Successfully!");
+      router.replace("/");
+    } catch (error) {
+      toast.error(`Server Error ${error}`);
+    } finally {
+      setIsLoading(false);
     }
-    toast.success("Registered Successfully!");
-    router.replace("/");
   };
   return (
-    <Card className=" w-full md:w-2/5  mx-auto">
-      <CardHeader>
-        <CardTitle className="text-center text-2xl font-bold ">
-          Register
-        </CardTitle>
-      </CardHeader>
+    <Card className=" w-full md:w-2/5 p-8 mx-auto">
+      <CardTitle className="text-center text-2xl font-bold ">
+        Register
+      </CardTitle>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmitted)} className="py-4">
+        <form onSubmit={handleSubmit(onSubmitted)} className="py-4 space-y-2">
           <div>
             <Label htmlFor="username">Username</Label>
             <Input
               className="mt-1"
               type="username"
               id="username"
+              disabled={isLoading}
               {...register("name")}
             />
             {errors?.name && (
@@ -65,6 +72,7 @@ export default function RegisterForm() {
               className="mt-1"
               type="email"
               id="email"
+              disabled={isLoading}
               {...register("email")}
             />
             {errors?.email && (
@@ -77,24 +85,31 @@ export default function RegisterForm() {
               className="mt-1"
               type="password"
               id="password"
+              disabled={isLoading}
               {...register("password")}
             />
             {errors?.password && (
               <p className="text-red-500">{errors.password.message}</p>
             )}
           </div>
-          <div className=" space-y-2 my-2">
-            <Button type="submit" className="w-full h-10 font-bold">
-              Register
+          <CardDescription className="flex flex-col items-center my-4">
+            <Button
+              disabled={isLoading}
+              type="submit"
+              className="my-2 w-full h-10 font-bold"
+              data-prevent-nprogress={true}
+            >
+              {isLoading && <CgSpinnerTwoAlt className=" animate-spin" />}
+              <span>{isLoading ? "Loading..." : "Register"}</span>
             </Button>
-          </div>
+            <span>
+              Already have an account?
+              <Link href={"/login"} className="px-2 font-bold underline">
+                Log In
+              </Link>
+            </span>
+          </CardDescription>
         </form>
-        <CardDescription className="flex justify-center">
-          Already have an account?
-          <Link href={"/login"} className="px-2 font-bold underline">
-            Log In
-          </Link>
-        </CardDescription>
       </CardContent>
     </Card>
   );

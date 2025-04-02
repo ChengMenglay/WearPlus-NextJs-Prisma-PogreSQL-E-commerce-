@@ -1,3 +1,11 @@
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phoneNumber: string | null;
+  image: string | null;
+  role: string;
+}
 export interface Billboard {
   id: string;
   title: string;
@@ -40,4 +48,17 @@ export interface ProductSize {
   productId: string;
   sizeId: string;
   size: Size; // Relationship to Size
+}
+
+export interface Province {
+  id: string;
+  name: string;
+}
+
+export interface Address {
+  id: string;
+  province: string;
+  addressDetail: string;
+  note: string | null;
+  user: User;
 }
