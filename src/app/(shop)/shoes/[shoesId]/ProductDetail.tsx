@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Product } from "../../../../../types";
 import Image from "next/image";
+import { CgSpinnerTwoAlt } from "react-icons/cg";
 import {
   Select,
   SelectContent,
@@ -27,13 +28,14 @@ import useCart from "@/hooks/use-cart";
 import axios from "axios";
 import useOpenSheet from "@/hooks/open-sheet";
 import CartSheet from "./components/CartSheet";
+import { toast } from "react-toastify";
 
 type ProductDetailProps = {
   product: Product | null;
 };
 
 const schema = z.object({
-  sizeId: z.string().min(1),
+  sizeId: z.string().min(1, "Please select a size!"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -41,6 +43,7 @@ export default function ProductDetailComponent({
   product,
 }: ProductDetailProps) {
   const [seletedShoes, setSeletedShoes] = useState(product?.images[0].url);
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -51,27 +54,34 @@ export default function ProductDetailComponent({
   const cart = useCart();
   const { isOpen: sheetIsOpen, onOpen } = useOpenSheet();
   const onAddToCart = async (data: FormValues) => {
-    const response = await axios.post("/api/product-size", {
-      productId: product?.id,
-      sizeId: data.sizeId,
-    });
-    const productSize = await response.data;
+    try {
+      setIsLoading(true);
+      const response = await axios.post("/api/product-size", {
+        productId: product?.id,
+        sizeId: data.sizeId,
+      });
+      const productSize = await response.data;
 
-    // Transform `productSize` into the `Product` type
-    const transformedProduct: Product = {
-      id: productSize.product.id,
-      name: productSize.product.name,
-      category: productSize.product.category,
-      price: String(productSize.product.price), // Assuming `price` in Product is a string
-      images: productSize.product.images, // Ensure images match `Product` type
-      type: productSize.product.type, // Assuming this exists in your schema
-      stock: productSize.product.stock,
-      sizes: [productSize],
-      detail: productSize.product.detail, // Assuming `detail` exists in your schema
-      isFeatured: productSize.product.isFeatured,
-    };
-    cart.addItem(transformedProduct);
-    onOpen();
+      // Transform `productSize` into the `Product` type
+      const transformedProduct: Product = {
+        id: productSize.product.id,
+        name: productSize.product.name,
+        category: productSize.product.category,
+        price: String(productSize.product.price), // Assuming `price` in Product is a string
+        images: productSize.product.images, // Ensure images match `Product` type
+        type: productSize.product.type, // Assuming this exists in your schema
+        stock: productSize.product.stock,
+        sizes: [productSize],
+        detail: productSize.product.detail, // Assuming `detail` exists in your schema
+        isFeatured: productSize.product.isFeatured,
+      };
+      cart.addItem(transformedProduct);
+      onOpen();
+    } catch (error) {
+      toast.error("Can't add this product to the cart!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -139,7 +149,7 @@ export default function ProductDetailComponent({
                         value={field.value}
                         defaultValue={field.value}
                         onValueChange={field.onChange}
-                        disabled={false}
+                        disabled={isLoading}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select size" />
@@ -171,7 +181,12 @@ export default function ProductDetailComponent({
                     {formatter.format(Number(product?.price))}
                   </p>
                   <div className="flex gap-4 mt-10">
-                    <Button type="submit">Add to cart</Button>
+                    <Button type="submit" disabled={isLoading}>
+                      {isLoading && (
+                        <CgSpinnerTwoAlt className="animate-spin" />
+                      )}
+                      <span>{isLoading ? "Loading..." : "Add to cart"}</span>
+                    </Button>
                     <Button variant={"outline"}>Buy Now</Button>
                   </div>
                 </Card>

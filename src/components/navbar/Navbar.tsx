@@ -13,7 +13,7 @@ export default async function Navbar() {
   const users = session?.user && (await getUserInfor());
   const categories = await getAllCategory();
   return (
-    <Card className="w-full h-16 rounded-none flex justify-center px-4">
+    <Card className="w-full h-16 rounded-none sticky top-0 z-50 flex justify-center px-4">
       <div className=" container h-full flex items-center justify-between">
         <Link href="/" className="font-bold text-black text-2xl sm:text-2xl">
           WEARPLUS

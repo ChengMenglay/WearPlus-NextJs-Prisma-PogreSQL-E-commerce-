@@ -10,24 +10,27 @@ import BrandLogo from "@/components/BrandLogo";
 import { Separator } from "@/components/ui/separator";
 
 const HomePage = async () => {
-  const billboards = await getBillboard();
-  const newproducts = await getProducts({ isFeatured: true, limit: 5 });
-  const jardan = await getProducts({
-    isFeatured: true,
-    categoryId: "cm37mw7pg000184wrfssnowyv",
-    limit: 5,
-  });
-  const nike = await getProducts({
-    isFeatured: true,
-    categoryId: "cm37lltfl000016e7ei0nsd68",
-    limit: 5,
-  });
-  const traviscott = await getProducts({
-    isFeatured: true,
-    categoryId: "cm61ubika00003btw9kxh8lm0",
-    limit: 5,
-  });
-  const latestBrand = await getAllCategory({ limit: 5 });
+  const [billboards, newproducts, jardan, nike, traviscott, latestBrand] =
+    await Promise.all([
+      getBillboard(),
+      getProducts({ isFeatured: true, limit: 5 }),
+      getProducts({
+        isFeatured: true,
+        categoryId: "cm37mw7pg000184wrfssnowyv",
+        limit: 5,
+      }),
+      getProducts({
+        isFeatured: true,
+        categoryId: "cm37lltfl000016e7ei0nsd68",
+        limit: 5,
+      }),
+      getProducts({
+        isFeatured: true,
+        categoryId: "cm61ubika00003btw9kxh8lm0",
+        limit: 5,
+      }),
+      getAllCategory({ limit: 4 }),
+    ]);
   return (
     <div className="px-2">
       <Billboard billboards={billboards} />

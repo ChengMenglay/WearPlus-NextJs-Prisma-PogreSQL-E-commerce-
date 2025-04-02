@@ -9,7 +9,6 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!token;
   const isAuthRoute = authenticationPath.includes(pathname);
-
   if (isLoggedIn && isAuthRoute)
     return NextResponse.redirect(new URL("/", req.url));
 
