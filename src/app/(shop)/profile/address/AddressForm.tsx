@@ -97,14 +97,14 @@ export default function AddressForm({
         addressDetail: "",
       });
     }
-  }, [selectedAddress, form]);
+  }, [user?.name, user?.phoneNumber, selectedAddress, form]);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
   useEffect(() => {
     router.refresh();
-  }, [isOpen]);
+  }, [router,isOpen]);
   if (!isMounted) {
     return null;
   }
@@ -148,6 +148,7 @@ export default function AddressForm({
       router.refresh();
       setIsOpen(false);
     } catch (error) {
+      console.log(error);
       toast.error("Fail to create the address!");
     } finally {
       setIsLoading(false);

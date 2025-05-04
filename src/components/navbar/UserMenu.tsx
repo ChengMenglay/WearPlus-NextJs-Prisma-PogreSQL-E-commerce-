@@ -17,7 +17,7 @@ type Props = {
   email: string | null | undefined;
   role: string | null | undefined;
 };
-export default function UserNavbar({ id, name, email, role }: Props) {
+export default function UserNavbar({  name, email, role }: Props) {
   const router = useRouter();
   return (
     <HoverCard>

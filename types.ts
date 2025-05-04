@@ -62,3 +62,13 @@ export interface Address {
   note: string | null;
   user: User;
 }
+
+export interface Delivery {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  logo_url: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

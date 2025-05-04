@@ -30,10 +30,10 @@ const formSchema = z.object({
   title: z.string().min(1),
   url: z.string().min(1),
 });
-type CategoryFormValues = z.infer<typeof formSchema>;
+type BillboardFormValue = z.infer<typeof formSchema>;
 export default function BillboardForm({ initialData }: BillboardFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<CategoryFormValues>({
+  const form = useForm<BillboardFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: initialData?.title || "",
@@ -47,7 +47,7 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
     : "Billboard created.";
   const action = initialData ? "Save changes" : "Create";
   const router = useRouter();
-  const onSubmit: any = async (data: CategoryFormValues) => {
+  const onSubmit = async (data: BillboardFormValue) => {
     try {
       setIsLoading(true);
       if (initialData) {
@@ -59,6 +59,7 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
       router.push(`/dashboard/billboard`);
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);
@@ -72,6 +73,7 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
       router.push(`/dashboard/billboard`);
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(true);

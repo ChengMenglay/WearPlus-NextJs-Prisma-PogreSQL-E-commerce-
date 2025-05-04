@@ -69,6 +69,7 @@ export default function CustomerForm({ initialData }: CustomerProps) {
       router.push(`/dashboard/customer`);
       router.refresh();
     } catch (error) {
+      console.log(error)
       toast.error("Something went wrong!");
     }
   };
@@ -79,6 +80,7 @@ export default function CustomerForm({ initialData }: CustomerProps) {
       router.push(`/dashboard/customer`);
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong!");
     }
   };

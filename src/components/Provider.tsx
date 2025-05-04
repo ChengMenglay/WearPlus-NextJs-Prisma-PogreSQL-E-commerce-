@@ -7,9 +7,9 @@ export default function Provider({ children }: { children: ReactNode }) {
   return (
     <>
       <ToastContainer
-        position="bottom-right"
+        position="top-center"
         hideProgressBar
-        className={"z-50"}
+        className={"z-[100]"}
       />
       <NextTopLoader />
       {children}

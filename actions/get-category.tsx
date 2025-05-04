@@ -16,7 +16,7 @@ const getAllCategory = async (query: Query = {}): Promise<Category[]> => {
       query: query.limit ? { limit: query.limit } : {},
     });
 
-    const response = await fetch(url, { method: "GET", cache: "no-store" });
+    const response = await fetch(url, { method: "GET" });
     if (!response.ok) {
       throw new Error(`Failed to fetch categories: ${response.statusText}`);
     }
@@ -33,7 +33,6 @@ export const getCategoryById = async (
   try {
     const response = await fetch(`${URL}/${categoryId}`, {
       method: "GET",
-      cache: "no-store",
     });
 
     if (!response.ok) {

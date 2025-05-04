@@ -10,7 +10,6 @@ import {
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
 import { ListItem } from "./NavLink";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Category } from "../../../types";
 
@@ -45,18 +44,28 @@ export default function ManuLink({ categories }: ManuLinkProps) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/available-immediately" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Available Immediately
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink
+            href="/available-immediately"
+            className={navigationMenuTriggerStyle()}
+          >
+            Available Immediately
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/staionary-shop" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Stationary Shop
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink
+            href="/staionary-shop"
+            className={navigationMenuTriggerStyle()}
+          >
+            Stationary Shop
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink
+            href="/faq"
+            className={navigationMenuTriggerStyle()}
+          >
+            FAQ
+          </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

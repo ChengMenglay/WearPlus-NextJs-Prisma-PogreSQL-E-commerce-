@@ -22,14 +22,13 @@ const getProducts = async (query: Query): Promise<Product[]> => {
       limit: query.limit,
     },
   });
-  const res = await fetch(url, { method: "GET", cache: "no-store" });
+  const res = await fetch(url, { method: "GET" });
   const data = await res.json();
   return data;
 };
 export const getProductById = async (productId: string): Promise<Product> => {
   const res = await fetch(`${URL}/${productId}`, {
     method: "GET",
-    cache: "no-store",
   });
   return res.json();
 };

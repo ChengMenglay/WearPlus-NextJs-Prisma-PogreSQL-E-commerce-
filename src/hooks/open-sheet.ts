@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface Sheet {
-  isOpen: Boolean;
+  isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 }

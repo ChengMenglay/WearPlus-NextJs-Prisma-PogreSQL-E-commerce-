@@ -76,7 +76,7 @@ export default function CartItem({ handleCalculateQty }: CartItemProps) {
                 <div className="flex border p-1 space-x-4">
                   <span
                     className="cursor-pointer text-lg"
-                    onClick={() => handleQtyChange(item.id, -1, item)}
+                    onClick={() => handleQtyChange(item.id,   -1, item)}
                   >
                     -
                   </span>
