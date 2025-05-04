@@ -1,10 +1,6 @@
 import { Category } from "../types";
 import qs from "query-string";
 
-const URL = process.env.NEXT_PUBLIC_API_URL
-  ? `${process.env.NEXT_PUBLIC_API_URL}/api/category`
-  : "";
-
 type Query = {
   limit?: number;
 };
@@ -12,7 +8,7 @@ type Query = {
 const getAllCategory = async (query: Query = {}): Promise<Category[]> => {
   try {
     const url = qs.stringifyUrl({
-      url: URL,
+      url: `${process.env.NEXT_PUBLIC_API_URL}/api/category`,
       query: query.limit ? { limit: query.limit } : {},
     });
 
