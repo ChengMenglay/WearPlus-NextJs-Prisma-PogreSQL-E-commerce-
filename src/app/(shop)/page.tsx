@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 import React from "react";
 import getProducts from "../../../actions/get-products";
 import { Billboard } from "@/components/Billboard";
