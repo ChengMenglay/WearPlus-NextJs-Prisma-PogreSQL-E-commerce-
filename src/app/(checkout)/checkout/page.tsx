@@ -3,14 +3,11 @@ import React from "react";
 import ProductTable from "./components/ProductTable";
 import { Separator } from "@/components/ui/separator";
 import CheckoutForm from "./components/Checkout";
-import { prisma } from "@/lib/prisma";
 import { getAllDelivery } from "../../../../actions/get-delivery";
+import { getAllAddress } from "../../../../actions/get-address";
 
 export default async function Checkout() {
-  const addresses = await prisma.address.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { user: true },
-  });
+  const addresses = await getAllAddress();
   const deliveries = await getAllDelivery();
   return (
     <>
