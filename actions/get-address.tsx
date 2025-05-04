@@ -1,9 +1,11 @@
 import { Address } from "../types";
 
-const URL = process.env.NEXT_PUBLIC_API_URL;
 export const getAllAddress = async (): Promise<Address[]> => {
   try {
-    const address = await fetch(`${URL}/api/address`, { method: "GET" });
+    const address = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/api/address",
+      { method: "GET" }
+    );
     if (!address.ok) {
       throw new Error(`Failed to fetch address: ${address.statusText}`);
     }
