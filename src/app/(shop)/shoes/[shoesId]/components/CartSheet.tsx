@@ -68,6 +68,7 @@ export default function CartSheet() {
       onClose();
       router.push("/checkout");
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong that can not process the checkout!");
     } finally {
       setIsLoading(false);
@@ -82,7 +83,9 @@ export default function CartSheet() {
         <SheetHeader>
           <SheetTitle>Cart</SheetTitle>
           <SheetDescription>
-            <CartItem handleCalculateQty={handleCalculateQty} />
+            <div>
+              <CartItem handleCalculateQty={handleCalculateQty} />
+            </div>
           </SheetDescription>
         </SheetHeader>
         <SheetFooter>

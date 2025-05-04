@@ -4,13 +4,13 @@ import {
   ChevronRight,
   ChevronsUpDown,
   Home,
-  Icon,
   Megaphone,
   Package,
   PackageOpen,
   PencilRuler,
   ShoppingBasket,
   ShoppingCart,
+  Truck,
   User,
 } from "lucide-react";
 import {
@@ -89,6 +89,11 @@ export default async function AppSidebar() {
       title: "Product",
       url: `/product`,
       icon: PackageOpen,
+    },
+    {
+      title: "Delivery",
+      url: `/delivery`,
+      icon: Truck,
     },
   ];
   return (

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const billboard = await prisma.billboard.findMany();
     return NextResponse.json(billboard);

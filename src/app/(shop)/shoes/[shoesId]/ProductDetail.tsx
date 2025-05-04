@@ -52,7 +52,7 @@ export default function ProductDetailComponent({
     },
   });
   const cart = useCart();
-  const { isOpen: sheetIsOpen, onOpen } = useOpenSheet();
+  const { onOpen } = useOpenSheet();
   const onAddToCart = async (data: FormValues) => {
     try {
       setIsLoading(true);
@@ -78,6 +78,7 @@ export default function ProductDetailComponent({
       cart.addItem(transformedProduct);
       onOpen();
     } catch (error) {
+      console.log(error);
       toast.error("Can't add this product to the cart!");
     } finally {
       setIsLoading(false);
@@ -180,6 +181,9 @@ export default function ProductDetailComponent({
                   <p className="text-2xl font-bold my-2">
                     {formatter.format(Number(product?.price))}
                   </p>
+                  <span className="text-sm text-gray-400">
+                    Stock: {product?.stock}
+                  </span>
                   <div className="flex gap-4 mt-10">
                     <Button type="submit" disabled={isLoading}>
                       {isLoading && (

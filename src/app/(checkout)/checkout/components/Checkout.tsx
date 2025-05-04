@@ -26,57 +26,48 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Address } from "../../../../../types";
+import { Address, Delivery } from "../../../../../types";
+import { formatter } from "@/lib/utils";
+import Image from "next/image";
+import useCart from "@/hooks/use-cart";
 
 type CheckoutProps = {
   addresses: Address[] | null;
+  deliveryOptions: Delivery[] | null;
 };
 const schema = z.object({
   addressId: z.string().min(1, "Please select an address!"),
   deliveryId: z.string().min(1, "Please select a delivery!"),
-  paymentMethodId: z.string().min(1, "Please select a payment method!"),
+  paymentMethod: z.string().min(1, "Please select a payment method!"),
   note: z.string().optional(),
 });
 
 type FormSchemaValue = z.infer<typeof schema>;
 
-const deliveryOptions = [
-  {
-    id: "jnt",
-    name: "J&T",
-    description:
-      "For this option, please pay first before we can send out your products.",
-    price: 0,
-  },
-  {
-    id: "phnom_penh",
-    name: "PHNOM PENH DELIVERY",
-    description:
-      "Order before 12 PM, it will be delivered from 2-5 PM in PP (Takmao Included).",
-    price: 0,
-  },
-  {
-    id: "vet",
-    name: "VET",
-    description:
-      "For this option, please pay first before we can send out your products.",
-    price: 0,
-  },
-];
-
-export default function CheckoutForm({ addresses }: CheckoutProps) {
+export default function CheckoutForm({
+  addresses,
+  deliveryOptions,
+}: CheckoutProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDelivery, setSelectedDelivery] = useState(deliveryOptions[0]);
+  const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(
+    null
+  );
   const [selectedAddress, setSelectedaddress] = useState<Address | null>(null);
   const router = useRouter();
-
+  const { items } = useCart();
+  const subTotal = items.reduce((acc, item) => {
+    return acc + Number(item.price) * Number(item.quantity);
+  }, 0);
+  const shippingCost = selectedDelivery ? Number(selectedDelivery.price) : 0;
+  const total = subTotal + shippingCost;
   const form = useForm<FormSchemaValue>({
     resolver: zodResolver(schema),
+    mode: "onChange",
     defaultValues: {
       addressId: "",
-      deliveryId: selectedDelivery.id,
-      paymentMethodId: "",
+      deliveryId: "",
+      paymentMethod: "",
       note: "",
     },
   });
@@ -99,13 +90,13 @@ export default function CheckoutForm({ addresses }: CheckoutProps) {
           <FormField
             control={form.control}
             name="addressId"
-            render={({ field }) => (
+            render={() => (
               <FormItem className="flex flex-col justify-center">
                 <div className="flex justify-between">
                   <FormLabel className="flex items-center text-lg">
                     <MapPin className="w-4 h-4 mr-1" /> Address
                   </FormLabel>
-                  <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+                  <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
                       <Button variant="destructive">Select address</Button>
                     </DialogTrigger>
@@ -113,10 +104,11 @@ export default function CheckoutForm({ addresses }: CheckoutProps) {
                       <DialogTitle className="text-sm font-semibold">
                         Select an address
                       </DialogTitle>
-                      <div className=" space-y-2">
+                      <div className="space-y-2">
                         {(addresses?.length as number) > 0 &&
                           addresses?.map((item) => (
                             <Card
+                              key={item.id}
                               onClick={() => {
                                 setSelectedaddress(item);
                                 form.setValue("addressId", item.id);
@@ -204,32 +196,44 @@ export default function CheckoutForm({ addresses }: CheckoutProps) {
                 </FormLabel>
                 <div className="p-4 mx-auto">
                   <h2 className="text-xl font-bold mb-4">Select Delivery</h2>
+                  <FormMessage />
                   <div className="space-y-3">
-                    {deliveryOptions.map((option) => (
+                    {deliveryOptions?.map((option) => (
                       <div
                         key={option.id}
-                        className={`p-4 border rounded-lg cursor-pointer ${
-                          selectedDelivery.id === option.id
+                        className={`p-4 flex space-x-4 items-center border rounded-lg cursor-pointer ${
+                          selectedDelivery?.id === option.id
                             ? "border-blue-500 bg-blue-100"
                             : "border-gray-300"
                         }`}
                         onClick={() => {
                           setSelectedDelivery(option);
                           form.setValue("deliveryId", option.id);
+                          form.trigger("deliveryId");
                         }}
                       >
-                        <h3 className="text-lg font-semibold">{option.name}</h3>
-                        <p className="text-sm text-gray-600">
-                          {option.description}
-                        </p>
-                        <p className="text-red-500 font-bold">
-                          ${option.price.toFixed(2)}
-                        </p>
+                        <Image
+                          alt={option.name}
+                          src={option.logo_url}
+                          width={100}
+                          height={100}
+                          className="rounded-md"
+                        />
+                        <div>
+                          <h3 className="text-lg font-semibold">
+                            {option.name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {option.description}
+                          </p>
+                          <p className="text-red-500 font-bold">
+                            {formatter.format(Number(option.price))}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -238,21 +242,35 @@ export default function CheckoutForm({ addresses }: CheckoutProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h1 className="font-semibold text-lg">Sub Total</h1>
-              <p className="font-bold text-red-600">$12.00</p>
+              <p className="font-bold text-red-600">
+                {formatter.format(Number(subTotal))}
+              </p>
             </div>
             <div className="flex items-center justify-between">
-              <h1 className="font-semibold text-lg">Delivery</h1>
-              <p className="font-bold text-red-600">$00.00</p>
+              <h1 className="font-semibold text-lg">Shipping Cost</h1>
+              <p className="font-bold text-red-600">
+                {formatter.format(shippingCost)}
+              </p>
             </div>
             <div className="flex items-center justify-between">
               <h1 className="font-semibold text-lg">Total</h1>
-              <p className="font-bold text-red-600">$12.00</p>
+              <p className="font-bold text-red-600">
+                {formatter.format(total)}
+              </p>
             </div>
           </div>
           <Separator className="mb-4 mt-8" />
+          <div
+            onClick={() => {
+              form.setValue("paymentMethod", "cash");
+              form.trigger("paymentMethod");
+            }}
+          >
+            Cash
+          </div>
           {/* Submit Button */}
           <div className="mt-6 flex justify-end">
-            <Button type="submit">
+            <Button type="submit" disabled={!form.formState.isValid}>
               Pay Now <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </div>

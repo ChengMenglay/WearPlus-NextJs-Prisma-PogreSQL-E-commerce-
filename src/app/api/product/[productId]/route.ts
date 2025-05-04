@@ -10,7 +10,7 @@ export async function GET(
       return new NextResponse("Product Id is required", { status: 400 });
     }
     const product = await prisma.product.findUnique({
-      where: { id: params.productId, status: "Active", isArchived: true },
+      where: { id: params.productId, status: "Active", isArchived: false },
       include: {
         images: true,
         category: true,

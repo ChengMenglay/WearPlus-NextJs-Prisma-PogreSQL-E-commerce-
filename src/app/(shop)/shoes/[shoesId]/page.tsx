@@ -9,7 +9,8 @@ type ProductDetailPageProps = {
 export default async function ProductDetailPage({
   params,
 }: ProductDetailPageProps) {
-  const product = await getProducts({ productId: params.shoesId });
+  const { shoesId } = await params;
+  const product = await getProducts({ productId: shoesId });
   const relatedProducts = await getProducts({
     categoryId: product[0].category.id,
   });

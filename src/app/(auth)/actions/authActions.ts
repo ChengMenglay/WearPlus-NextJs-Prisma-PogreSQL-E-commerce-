@@ -4,7 +4,6 @@ import { ActionResult } from "@/app";
 import { auth, signIn, signOut } from "@/auth";
 import { LoginSchema } from "@/lib/schemas/loginSchema";
 import { registerSchema, RegisterSchema } from "@/lib/schemas/registerSchema";
-import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -23,16 +22,7 @@ export async function signInUser(
     return { status: "error", error: "Log in fail!" };
   } catch (error) {
     console.error(error);
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { status: "error", error: "Invalid credentials" };
-        default:
-          return { status: "error", error: "Something went wrong" };
-      }
-    } else {
-      return { status: "error", error: "Something else went wrong" };
-    }
+    return { status: "error", error: "Invalid credentials" };
   }
 }
 

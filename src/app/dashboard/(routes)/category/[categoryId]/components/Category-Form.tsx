@@ -45,7 +45,7 @@ export default function CategoryForm({ initialData }: CategoryFormProps) {
   const action = initialData ? "Save changes" : "Create";
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const onSubmit: any = async (data: CategoryFormValues) => {
+  const onSubmit = async (data: CategoryFormValues) => {
     try {
       setIsLoading(true);
       if (initialData) {

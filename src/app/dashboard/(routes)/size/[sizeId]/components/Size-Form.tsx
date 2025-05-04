@@ -43,7 +43,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
   const toastMessage = initialData ? "Size updated." : "Size created.";
   const action = initialData ? "Save changes" : "Create";
   const router = useRouter();
-  const onSubmit: any = async (data: SizeFormValues) => {
+  const onSubmit = async (data: SizeFormValues) => {
     try {
       if (initialData) {
         await axios.patch(`/api/size/${initialData.id}`, data);
@@ -54,6 +54,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
       router.push(`/dashboard/size`);
       router.refresh();
     } catch (error) {
+      console.log(error)
       toast.error("Something went wrong!");
     }
   };
@@ -64,6 +65,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
       router.push(`/dashboard/size`);
       router.refresh();
     } catch (error) {
+      console.log(error)
       toast.error("Something went wrong!");
     }
   };
