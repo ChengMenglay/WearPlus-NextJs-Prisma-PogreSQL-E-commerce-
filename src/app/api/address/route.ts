@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 export async function GET() {
   try {
-    const address = await prisma.address.findMany();
+    const address = await prisma.address.findMany({include:{user:true},orderBy:{createdAt:'desc'}});
     return NextResponse.json(address);
   } catch (error) {
     console.log("[Address_GET]", error);
