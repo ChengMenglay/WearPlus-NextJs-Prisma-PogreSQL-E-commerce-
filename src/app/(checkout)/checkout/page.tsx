@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import React from "react";
 import ProductTable from "./components/ProductTable";
@@ -7,8 +8,8 @@ import { getAllDelivery } from "../../../../actions/get-delivery";
 import { getAllAddress } from "../../../../actions/get-address";
 
 export default async function Checkout() {
-  const addresses = await getAllAddress();
-  const deliveries = await getAllDelivery();
+  const addresses = await getAllAddress().catch(() => []);
+  const deliveries = await getAllDelivery().catch(() => []);
   return (
     <>
       <Card className="container mx-auto p-6 my-10">
