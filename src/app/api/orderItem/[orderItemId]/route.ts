@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { orderItemId: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { orderItemId: string } }
+) {
   try {
     if (!params.orderItemId) {
       return new NextResponse("OrderItem ID is required", { status: 400 });
@@ -41,7 +44,10 @@ export async function PATCH(
   }
 }
 
-export async function DELETE({ params }: { params: { orderItemId: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { orderItemId: string } }
+) {
   try {
     if (!params.orderItemId) {
       return new NextResponse("OrderItem ID is required", { status: 400 });

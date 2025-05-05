@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { orderId: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { orderId: string } }
+) {
   try {
     if (!params.orderId) {
       return new NextResponse("OrderId Id is required", { status: 400 });
@@ -23,11 +26,11 @@ export async function GET({ params }: { params: { orderId: string } }) {
 }
 
 export async function PATCH(
-  req: Request,
+  request: Request,
   { params }: { params: { orderId: string } }
 ) {
   try {
-    const body = await req.json();
+    const body = await request.json();
     const { userId, deliveryId, addressId, status, isPaid, note, payment } =
       body;
     if (!params.orderId) {
@@ -63,7 +66,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
+  request: Request,
   { params }: { params: { orderId: string } }
 ) {
   try {
