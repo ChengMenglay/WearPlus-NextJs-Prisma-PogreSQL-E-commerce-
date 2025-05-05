@@ -1,5 +1,6 @@
 import qs from "query-string";
 import { Product } from "../types";
+import axios from "axios";
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/api/product`;
 
@@ -22,15 +23,12 @@ const getProducts = async (query: Query): Promise<Product[]> => {
       limit: query.limit,
     },
   });
-  const res = await fetch(url, { method: "GET" });
-  const data = await res.json();
-  return data;
+  const res = await axios.get(url);
+  return res.data;
 };
 export const getProductById = async (productId: string): Promise<Product> => {
-  const res = await fetch(`${URL}/${productId}`, {
-    method: "GET",
-  });
-  return res.json();
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/product/${productId}`);
+  return res.data;
 };
 
 export default getProducts;

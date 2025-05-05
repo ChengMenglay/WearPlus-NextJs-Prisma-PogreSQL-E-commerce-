@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Category } from "../types";
 import qs from "query-string";
 
@@ -12,11 +13,8 @@ const getAllCategory = async (query: Query = {}): Promise<Category[]> => {
       query: query.limit ? { limit: query.limit } : {},
     });
 
-    const response = await fetch(url, { method: "GET" });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch categories: ${response.statusText}`);
-    }
-    return await response.json();
+    const response = await axios.get(url);
+    return await response.data;
   } catch (error) {
     console.error("Error fetching all categories:", error);
     throw error; // Re-throw to let the caller handle it
