@@ -5,7 +5,14 @@ import type { NextRequest } from "next/server";
 const adminPath = ["/dashboard"];
 const authenticationPath = ["/login", "/register"];
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+    cookieName:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-authjs.session-token"
+        : "authjs.session-token",
+  });
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!token;
   const isAuthRoute = authenticationPath.includes(pathname);
