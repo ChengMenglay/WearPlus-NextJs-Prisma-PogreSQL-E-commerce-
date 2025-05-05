@@ -1,14 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-<<<<<<< HEAD
-export async function GET({ params }: { params: { orderId: string } }) {
-=======
 export async function GET(
   request: Request,
   { params }: { params: { orderId: string } }
 ) {
->>>>>>> feature/checkout
   try {
     if (!params.orderId) {
       return new NextResponse("OrderId Id is required", { status: 400 });
@@ -30,19 +26,11 @@ export async function GET(
 }
 
 export async function PATCH(
-<<<<<<< HEAD
-  req: Request,
-  { params }: { params: { orderId: string } }
-) {
-  try {
-    const body = await req.json();
-=======
   request: Request,
   { params }: { params: { orderId: string } }
 ) {
   try {
     const body = await request.json();
->>>>>>> feature/checkout
     const { userId, deliveryId, addressId, status, isPaid, note, payment } =
       body;
     if (!params.orderId) {
@@ -78,11 +66,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-<<<<<<< HEAD
-  req: Request,
-=======
   request: Request,
->>>>>>> feature/checkout
   { params }: { params: { orderId: string } }
 ) {
   try {
@@ -97,8 +81,4 @@ export async function DELETE(
     console.log("[ORDER_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> feature/checkout
