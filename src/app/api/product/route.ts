@@ -84,3 +84,21 @@ export async function GET(req: Request) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const { id, stock } = body;
+    if (!id || stock === undefined) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
+    const product = await prisma.product.update({
+      where: { id },
+      data: { stock },
+    });
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error("[PRODUCT_STOCK_UPDATE]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}

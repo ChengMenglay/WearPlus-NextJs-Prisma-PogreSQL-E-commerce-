@@ -5,10 +5,12 @@ import { Separator } from "@/components/ui/separator";
 import CheckoutForm from "./components/Checkout";
 import { getAllDelivery } from "../../../../actions/get-delivery";
 import { getAllAddress } from "../../../../actions/get-address";
+import { getUserId } from "@/app/(auth)/actions/authActions";
 
 export default async function Checkout() {
-  const addresses = await getAllAddress().catch(() => []);
-  const deliveries = await getAllDelivery().catch(() => []);
+  const addresses = await getAllAddress();
+  const deliveries = await getAllDelivery();
+  const userId = await getUserId();
   return (
     <>
       <Card className="container mx-auto p-6 my-10">
@@ -19,7 +21,11 @@ export default async function Checkout() {
           <ProductTable />
           <div>
             <Separator className="my-2" />
-            <CheckoutForm addresses={addresses} deliveryOptions={deliveries} />
+            <CheckoutForm
+              userId={userId}
+              addresses={addresses}
+              deliveryOptions={deliveries}
+            />
           </div>
         </CardContent>
       </Card>
