@@ -127,7 +127,7 @@ model Order{
   user User @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
   addressId String
-  address Address @relation(fields: [addressId], references: [id])
+  address Address @relation(fields: [addressId], references: [id], onDelete:Cascade)
   note String?
   deliveryId String
   delivery Delivery @relation(fields: [deliveryId], references: [id])
@@ -136,7 +136,7 @@ model Order{
   isPaid Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  
   @@index([deliveryId])
   @@index([addressId])
 }
@@ -147,6 +147,7 @@ model OrderItem{
   order Order @relation(fields: [orderId], references: [id])
   productId String
   product Product @relation(fields: [productId], references: [id])
+  price Decimal
   quantity Int
   size String
   @@index([productId])
