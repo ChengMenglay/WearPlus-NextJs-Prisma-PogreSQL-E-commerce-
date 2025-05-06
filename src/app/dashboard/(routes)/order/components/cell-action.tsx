@@ -10,7 +10,9 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
 import { OrderColumn } from "./columns";
-import { prisma } from "@/lib/prisma";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 type CellActionProps = {
   data: OrderColumn;
@@ -22,6 +24,7 @@ export default function CellAction({
   status1,
   status2,
 }: CellActionProps) {
+  const router = useRouter();
   return (
     <>
       <DropdownMenu>
@@ -34,22 +37,30 @@ export default function CellAction({
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() =>
-              prisma.order.update({
-                where: { id: data.id },
-                data: { status: status1 },
-              })
-            }
+            onClick={async () => {
+              const response = await axios.put("/api/order", {
+                orderId: data.id,
+                status: status1,
+              });
+              if (response.status === 200) {
+                toast.success("Order status has been changed.");
+                router.refresh();
+              }
+            }}
           >
             {status1}
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() =>
-              prisma.order.update({
-                where: { id: data.id },
-                data: { status: status2 },
-              })
-            }
+            onClick={async () => {
+              const response = await axios.put("/api/order", {
+                orderId: data.id,
+                status: status2,
+              });
+              if (response.status === 200) {
+                toast.success("Order status has been changed.");
+                router.refresh();
+              }
+            }}
           >
             {status2}
           </DropdownMenuItem>

@@ -174,6 +174,18 @@ export default function CheckoutForm({
                 });
               })
             );
+
+            //Calculate the total price of the order
+            const totalPrice = items.reduce(
+              (acc, item) => acc + Number(item.price) * Number(item.quantity),
+              0
+            );
+
+            //send message to admin's telegram
+            await axios.post("/api/telegram/notify", {
+              orderId: order.data.id,
+              totalPrice: totalPrice,
+            });
             toast.success("Order placed successfully!");
             removeAll();
             router.refresh();
