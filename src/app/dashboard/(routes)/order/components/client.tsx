@@ -22,7 +22,11 @@ export const ClientOrder: FC<OrderClientProps> = ({ data }) => {
       dynamicColumns.push({
         accessorKey: "actions",
         cell: ({ row }) => (
-          <CellAction data={row.original} status1="Pending" status2="Cancel" />
+          <CellAction
+            data={row.original}
+            status1="Pending"
+            status2="Canceled"
+          />
         ),
       });
     }
@@ -33,12 +37,12 @@ export const ClientOrder: FC<OrderClientProps> = ({ data }) => {
           <CellAction
             data={row.original}
             status1="Completed"
-            status2="Cancel"
+            status2="Canceled"
           />
         ),
       });
     }
-    if (selectedTab === "Cancel") {
+    if (selectedTab === "Canceled") {
       dynamicColumns.push({
         accessorKey: "actions",
         cell: ({ row }) => (
@@ -57,7 +61,7 @@ export const ClientOrder: FC<OrderClientProps> = ({ data }) => {
   // Filter orders based on the selected tab
   const filterOrders = useMemo(() => {
     return data.filter((order) => {
-      if (selectedTab === "All") return true;
+      if (selectedTab === "All") return order;
       return order.status === selectedTab;
     });
   }, [data, selectedTab]);
@@ -77,32 +81,32 @@ export const ClientOrder: FC<OrderClientProps> = ({ data }) => {
           <TabsTrigger value="All">All</TabsTrigger>
           <TabsTrigger value="Completed">Completed</TabsTrigger>
           <TabsTrigger value="Pending">Pending</TabsTrigger>
-          <TabsTrigger value="Cancel">Cancel</TabsTrigger>
+          <TabsTrigger value="Canceled">Canceled</TabsTrigger>
         </TabsList>
         <TabsContent value="All">
           <DataTable
-            searchKey="products"
+            searchKey="phone"
             columns={columnsWithActions}
             data={filterOrders}
           />
         </TabsContent>
         <TabsContent value="Completed">
           <DataTable
-            searchKey="products"
+            searchKey="phone"
             columns={columnsWithActions}
             data={filterOrders}
           />
         </TabsContent>
         <TabsContent value="Pending">
           <DataTable
-            searchKey="products"
+            searchKey="phone"
             columns={columnsWithActions}
             data={filterOrders}
           />
         </TabsContent>
-        <TabsContent value="Cancel">
+        <TabsContent value="Canceled">
           <DataTable
-            searchKey="products"
+            searchKey="phone"
             columns={columnsWithActions}
             data={filterOrders}
           />

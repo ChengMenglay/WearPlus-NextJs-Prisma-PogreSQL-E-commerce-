@@ -7,7 +7,6 @@ import { formatter } from "@/lib/utils";
 
 export default async function OrderPage() {
   const Orders = await prisma.order.findMany({
-    where: { status: "Pending" },
     include: {
       orderItems: { include: { product: true } },
       address: { include: { user: true } },
@@ -16,6 +15,7 @@ export default async function OrderPage() {
   });
   const formattedOrder: OrderColumn[] = Orders.map((item) => ({
     id: item.id,
+    customer: item.address.user.name,
     products: item.orderItems.map((i) => i.product.name).join(","),
     address: item.address.province + ", " + item.address.addressDetail,
     phone: item.address.user.phoneNumber || "",
