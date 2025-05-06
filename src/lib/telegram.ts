@@ -33,19 +33,33 @@ export async function sendOrderNotification(order: OrderWithRelations) {
 
     // Format order details
     const response = `
-          📦 *Order #${orders.length}*
-  
-          🕒 *Order Date:* ${new Date(order.createdAt).toLocaleString()}  
-          🔄 *Status:* ${order.status}
-          💳 *Payment:* ${order.payment}
-          💰 *Paid:* ${order.isPaid ? "Yes ✅" : "No ❌"}
-          🛍️ *Total Items:* ${order.orderItems.length}
-          💰 *Total Price:* ${order.totalPrice}$
-          🚚 *Delivery:* ${order.delivery.name}
-          📍 *Address:* ${order.address.addressDetail}, ${
-      order.address.province
-    }
-        `;
+🛍️ *ORDER SUMMARY #${orders.length}* 🛍️
+━━━━━━━━━━━━━━━━━━━━━━━
+
+📆 *Date:* ${new Date(order.createdAt).toLocaleString()}
+
+📋 *PRODUCTS:*${order.orderItems
+      .map((item) => {
+        // Since all products are shoes, use shoe emojis
+        return `\n  👟 *${item.product.name}*\n     • Quantity: ${item.quantity}\n     • Size: ${item.size}`;
+      })
+      .join("\n")}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+💳 *Payment Method:* ${order.payment}
+💰 *Payment Status:* ${order.isPaid ? "Paid ✅" : "Pending ⏳"}
+🔄 *Order Status:* ${order.status}
+📦 *Total Items:* ${order.orderItems.length}
+💵 *Total Price:* $${order.totalPrice}
+
+🚚 *DELIVERY DETAILS:*
+   • Method: ${order.delivery.name}
+   • Address: ${order.address.addressDetail}, ${order.address.province}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+Thank you for your order!
+`;
 
     // Send notification to admin
     await sendTelegramMessage(adminChatId, response, "Markdown");
