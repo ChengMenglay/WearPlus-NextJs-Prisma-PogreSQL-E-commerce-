@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { sendOrderNotification } from "@/lib/telegram";
 import { NextResponse } from "next/server";
-import { sendOrderNotification } from "../webhook/route";
 
 export async function POST(request: Request) {
   try {
