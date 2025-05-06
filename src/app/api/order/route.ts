@@ -45,3 +45,24 @@ export async function POST(req: Request) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const { orderId, status } = body;
+
+    if (!orderId || !status) {
+      return new NextResponse("Missing orderId or status", { status: 400 });
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+    });
+
+    return NextResponse.json(updatedOrder);
+  } catch (error) {
+    console.error("[ORDER_POST]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
