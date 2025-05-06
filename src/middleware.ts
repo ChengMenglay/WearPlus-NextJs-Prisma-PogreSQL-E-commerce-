@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 
 const adminPath = ["/dashboard"];
 const authenticationPath = ["/login", "/register"];
+const checkoutPath = ["/checkout"];
 export async function middleware(req: NextRequest) {
   const token = await getToken({
     req,
@@ -18,7 +19,9 @@ export async function middleware(req: NextRequest) {
   const isAuthRoute = authenticationPath.includes(pathname);
   if (isLoggedIn && isAuthRoute)
     return NextResponse.redirect(new URL("/", req.url));
-
+  if (!isLoggedIn && checkoutPath.includes(pathname)) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
   if (!isLoggedIn && adminPath.some((path) => pathname.startsWith(path)))
     return NextResponse.redirect(new URL("/login", req.url));
   if (adminPath.some((path) => pathname.startsWith(path))) {
@@ -32,5 +35,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"],
+  matcher: ["/dashboard/:path*", "/login", "/register", "/checkout"],
 };

@@ -1,8 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const address = await prisma.address.findMany({include:{user:true},orderBy:{createdAt:'desc'}});
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+    if (!userId)
+      return NextResponse.json("User id is require", { status: 400 });
+    const address = await prisma.address.findMany({
+      where: { userId },
+      include: { user: true },
+      orderBy: { createdAt: "desc" },
+    });
     return NextResponse.json(address);
   } catch (error) {
     console.log("[Address_GET]", error);
