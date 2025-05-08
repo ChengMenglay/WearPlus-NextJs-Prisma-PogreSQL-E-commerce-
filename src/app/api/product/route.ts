@@ -96,6 +96,12 @@ export async function PATCH(req: Request) {
       where: { id },
       data: { stock },
     });
+    if (product.stock === 0) {
+      await prisma.product.update({
+        where: { id },
+        data: { status: "Out of Stock", isArchived: true, isFeatured: false },
+      });
+    }
     return NextResponse.json(product);
   } catch (error) {
     console.error("[PRODUCT_STOCK_UPDATE]", error);

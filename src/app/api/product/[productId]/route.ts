@@ -94,6 +94,14 @@ export async function PATCH(
         sizes: { include: { size: true } },
       },
     });
+    if (updatedProduct.stock > 0) {
+      await prisma.product.update({
+        where: { id: params.productId },
+        data: {
+          status: "Active",
+        },
+      });
+    }
 
     return NextResponse.json(updatedProduct);
   } catch (error) {
