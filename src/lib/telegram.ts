@@ -30,35 +30,23 @@ export async function sendOrderNotification(order: OrderWithRelations) {
         createdAt: "desc",
       },
     });
-
-    // Format order details
+    // Format order details with proper spacing
     const response = `
-🛍️ *ORDER SUMMARY #${orders.length}* 🛍️
-━━━━━━━━━━━━━━━━━━━━━━━
+🛍️ *ORDER #${orders.length}* | ${new Date(order.createdAt).toLocaleDateString()}
 
-📆 *Date:* ${new Date(order.createdAt).toLocaleString()}
+📋 *ITEMS:* ${order.orderItems
+      .map((item) => `${item.product.name} (${item.size}) x${item.quantity}`)
+      .join(", ")}
 
-📋 *PRODUCTS:*${order.orderItems
-      .map((item) => {
-        // Since all products are shoes, use shoe emojis
-        return `\n  👟 *${item.product.name}*\n     • Quantity: ${item.quantity}\n     • Size: ${item.size}`;
-      })
-      .join("\n")}
+💰 ${order.isPaid ? "Paid ✅" : "Pending ⏳"} | ${order.payment} | $${
+      order.totalPrice
+    }
+🔄 *Status:* ${order.status}
 
-━━━━━━━━━━━━━━━━━━━━━━━
-
-💳 *Payment Method:* ${order.payment}
-💰 *Payment Status:* ${order.isPaid ? "Paid ✅" : "Pending ⏳"}
-🔄 *Order Status:* ${order.status}
-📦 *Total Items:* ${order.orderItems.length}
-💵 *Total Price:* $${order.totalPrice}
-
-🚚 *DELIVERY DETAILS:*
-   • Method: ${order.delivery.name}
-   • Address: ${order.address.addressDetail}, ${order.address.province}
-
-━━━━━━━━━━━━━━━━━━━━━━━
-Thank you for your order!
+👤 ${order.address.user.name} | ${order.address.user.phoneNumber}
+📦 ${order.delivery.name} | ${order.address.addressDetail}, ${
+      order.address.province
+    }
 `;
 
     // Send notification to admin

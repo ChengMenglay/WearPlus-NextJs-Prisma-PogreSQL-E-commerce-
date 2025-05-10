@@ -16,25 +16,22 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ProductTable() {
-  const { items, addItem, removeAll } = useCart();
+  const { items, removeItem, updateQuantity } = useCart();
 
-  const handleQtyChange = (id: string, delta: number) => {
-    const updatedItems = items.map((item) => {
-      const currentQty = item.quantity || 1;
-      const newQty = currentQty + delta;
-      if (newQty <= 0) return { ...item, quantity: 1 };
-      if (newQty > item.stock) return { ...item, quantity: item.stock };
+  const handleQtyChange = (id: string, sizeId: string, delta: number) => {
+    const item = items.find(
+      (item) => item.id === id && item.sizes.some((size) => size.id === sizeId)
+    );
 
-      return item.id === id ? { ...item, quantity: newQty } : item;
-    });
-    removeAll();
-    updatedItems.forEach((item) => addItem(item));
+    if (!item) return;
+
+    const currentQty = item.quantity || 1;
+    const newQty = currentQty + delta;
+
+    // Let the cart hook handle validation
+    updateQuantity(id, sizeId, newQty);
   };
-  const handleRemoveItem = (id: string) => {
-    const filterdProducts = items.filter((item) => item.id !== id);
-    removeAll();
-    filterdProducts.forEach((item) => addItem(item));
-  };
+
   return (
     <>
       {items.length > 0 ? (
@@ -45,11 +42,12 @@ export default function ProductTable() {
               <TableHead>Size</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Total</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow key={`${item.id}-${item.sizes[0].id}`}>
                 <TableCell>
                   <div className="flex sm:gap-10 gap-4">
                     <div className="relative sm:w-[100px] w-[70px] sm:h-[100px] h-[70px]">
@@ -76,27 +74,33 @@ export default function ProductTable() {
                   <div className=" p-1 space-x-4">
                     <span
                       className="cursor-pointer text-lg"
-                      onClick={() => handleQtyChange(item.id, -1)}
+                      onClick={() =>
+                        handleQtyChange(item.id, item.sizes[0].id, -1)
+                      }
                     >
                       -
                     </span>
-                    <span className="text-lg">{item.quantity}</span>
+                    <span className="text-lg">{item.quantity || 1}</span>
                     <span
                       className="cursor-pointer text-lg"
-                      onClick={() => handleQtyChange(item.id, 1)}
+                      onClick={() =>
+                        handleQtyChange(item.id, item.sizes[0].id, 1)
+                      }
                     >
                       +
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="text-red-600 font-bold">
-                  {formatter.format(Number(item.quantity) * Number(item.price))}
+                  {formatter.format(
+                    Number(item.quantity || 1) * Number(item.price)
+                  )}
                 </TableCell>
                 <TableCell className="text-red-600 font-bold">
                   <Button
                     variant={"destructive"}
                     size={"icon"}
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() => removeItem(item.id, item.sizes[0].id)}
                   >
                     <Trash2 className="w-5 h-5" />
                   </Button>

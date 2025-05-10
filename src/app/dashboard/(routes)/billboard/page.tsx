@@ -12,7 +12,7 @@ export default async function BillboardPage() {
     id: item.id,
     title: item.title,
     url: item.url,
-    createAt: format(item.createdAt, "MMMM do, yyyy"),
+    createAt: format(item.createdAt, "do, MMMM, yyyy"),
   }));
   return (
     <div className="flex-col">

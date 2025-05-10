@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sheet";
 import CartItem from "./CartItem";
 import { formatter } from "@/lib/utils";
-import { Product } from "../../../../../../types";
 import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -21,50 +20,26 @@ import { CgSpinnerTwoAlt } from "react-icons/cg";
 export default function CartSheet() {
   const { isOpen: sheetIsOpen, onOpen, onClose } = useOpenSheet();
   const [total, setTotal] = useState(0);
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [isLoading, setIsLoading] = useState(false);
   const cart = useCart();
   const router = useRouter();
 
   // Function to handle quantity updates and recalculate the total
-  const handleCalculateQty = useCallback(
-    (item: Product, qty: number) => {
-      setQuantities((prev) => {
-        const updatedQuantities = {
-          ...prev,
-          [item.id]: qty,
-        };
+  const handleCalculateQty = useCallback(() => {
+    // Recalculate the total based on all items in cart
+    const newTotal = cart.items.reduce((acc, cartItem) => {
+      const price = parseFloat(cartItem.price);
+      const quantity = cartItem.quantity || 1;
+      return acc + price * quantity;
+    }, 0);
 
-        // Recalculate the total based on updated quantities
-        const newTotal = Object.entries(updatedQuantities).reduce(
-          (acc, [id, quantity]) => {
-            const itemPrice = cart.items.find((item) => item.id === id)?.price;
-            if (!itemPrice) return acc; // Ensure price is found for the item
-
-            const price = parseFloat(itemPrice); // Ensure price is a float
-            return acc + price * quantity;
-          },
-          0
-        );
-
-        setTotal(newTotal);
-        return updatedQuantities;
-      });
-    },
-    [cart.items]
-  ); // Include cart.items to trigger recalculations when cart changes
+    setTotal(newTotal);
+  }, [cart.items]);
 
   const handleCheckout = () => {
     try {
       setIsLoading(true);
-      const newCart: Product[] = [];
-      cart.items.map((item) =>
-        newCart.push({ ...item, quantity: quantities[item.id] || 1 })
-      );
-      cart.removeAll();
-      newCart.forEach((product) => {
-        cart.addItem(product); // Call addItem for each product individually
-      });
+      // No need to manipulate quantities here as they're already stored in the cart items
       onClose();
       router.push("/checkout");
     } catch (error) {
@@ -74,6 +49,7 @@ export default function CartSheet() {
       setIsLoading(false);
     }
   };
+
   return (
     <Sheet
       open={sheetIsOpen as boolean}

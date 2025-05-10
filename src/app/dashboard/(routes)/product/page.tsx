@@ -23,7 +23,7 @@ export default async function ProductPage() {
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
     status: item.status as string,
-    createAt: format(item.createAt, "MMMM do, yyyy"),
+    createAt: format(item.createAt, "do, MMMM, yyyy"),
   }));
   return (
     <div className="flex-col">

@@ -18,7 +18,7 @@ export default async function CustomerPage() {
     phoneNumber: item.phoneNumber,
     address: item.address,
     role: item.role,
-    createAt: format(item.createdAt, "MMMM do, yyyy"),
+    createAt: format(item.createdAt, "do, MMMM, yyyy"),
   }));
   return (
     <div className="flex-col">

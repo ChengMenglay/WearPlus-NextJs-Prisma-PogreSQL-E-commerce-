@@ -20,6 +20,7 @@ model User {
   role          String @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  favorites Favorite[]
   order Order[]
 }
 model Billboard{
@@ -64,7 +65,7 @@ model Product{
   orderItems OrderItem[]
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
-
+  favorites Favorite[]
   @@index([categoryId])
 }
 
@@ -152,4 +153,16 @@ model OrderItem{
   size String
   @@index([productId])
   @@index([orderId])
+}
+
+model Favorite{
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([productId])
+  @@index([userId])
 }

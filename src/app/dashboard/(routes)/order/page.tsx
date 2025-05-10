@@ -25,7 +25,7 @@ export default async function OrderPage() {
       }, 0)
     ),
     isPaid: item.isPaid,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    createdAt: format(item.createdAt, "do, MMMM, yyyy"),
     status: item.status,
   }));
   return (

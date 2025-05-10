@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { BadgeCheck, User } from "lucide-react";
+import { BadgeCheck, LogOut, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { signOutUser } from "@/app/(auth)/actions/authActions";
 
 type Props = {
   id: string | null | undefined;
@@ -64,7 +65,7 @@ export default function UserNavbar({ name, email, role }: Props) {
               Profile
             </DropdownMenuItem>
           </Link>
-          {role === "admin" ? (
+          {role === "admin" && (
             <DropdownMenuItem
               className="cursor-pointer p-2 rounded-md hover:bg-slate-100 duration-200 flex items-center focus:outline-none focus:bg-slate-100"
               onClick={() => router.push(`/dashboard`)}
@@ -72,15 +73,14 @@ export default function UserNavbar({ name, email, role }: Props) {
               <User className="mr-2 h-4 w-4" />
               Admin Dashboard
             </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              className="cursor-pointer p-2 rounded-md hover:bg-slate-100 duration-200 flex items-center focus:outline-none focus:bg-slate-100"
-              onClick={() => router.push("/profile")}
-            >
-              <User className="mr-2 h-4 w-4" />
-              User Dashboard
-            </DropdownMenuItem>
           )}
+          <DropdownMenuItem
+            onClick={async () => await signOutUser()}
+            className="cursor-pointer p-2 rounded-md hover:bg-slate-100 duration-200 flex items-center focus:outline-none focus:bg-slate-100"
+          >
+            <LogOut className="w-5 h-5 mr-2" />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
