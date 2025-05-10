@@ -191,7 +191,6 @@ export default function ProductDetailComponent({
                       )}
                       <span>{isLoading ? "Loading..." : "Add to cart"}</span>
                     </Button>
-                    <Button variant={"outline"}>Buy Now</Button>
                   </div>
                 </Card>
               </form>

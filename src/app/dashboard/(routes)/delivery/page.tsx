@@ -14,7 +14,7 @@ export default async function DeliveryPage() {
     logo_url: item.logo_url,
     price: Number(item.price),
     description: item.description,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    createdAt: format(item.createdAt, "do, MMMM, yyyy"),
   }));
   return (
     <div className="flex-col">

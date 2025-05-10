@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 const adminPath = ["/dashboard"];
 const authenticationPath = ["/login", "/register"];
 const checkoutPath = ["/checkout"];
+const protectedPath = ["/profile"];
 export async function middleware(req: NextRequest) {
   const token = await getToken({
     req,
@@ -30,10 +31,19 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
+  if (!isLoggedIn && protectedPath.some((path) => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
   // Continue the request if the user has the correct role
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register", "/checkout"],
+  matcher: [
+    "/dashboard/:path*",
+    "/login",
+    "/register",
+    "/checkout",
+    "/profile/:path*",
+  ],
 };

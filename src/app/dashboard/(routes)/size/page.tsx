@@ -12,7 +12,7 @@ export default async function CategoryPage() {
     id: item.id,
     name: item.name,
     value: item.value,
-    createAt: format(item.createAt, "MMMM do, yyyy"),
+    createAt: format(item.createAt, "do, MMMM, yyyy"),
   }));
   return (
     <div className="flex-col">

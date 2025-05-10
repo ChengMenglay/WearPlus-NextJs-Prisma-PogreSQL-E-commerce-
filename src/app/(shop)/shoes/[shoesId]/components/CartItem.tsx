@@ -6,55 +6,36 @@ import useCart from "@/hooks/use-cart";
 import { formatter } from "@/lib/utils";
 import { Trash } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Product } from "../../../../../../types";
-import { toast } from "react-toastify";
 
 type CartItemProps = {
   handleCalculateQty: (item: Product, qty: number) => void;
 };
+
 export default function CartItem({ handleCalculateQty }: CartItemProps) {
   const cart = useCart();
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>(() =>
-    cart.items.reduce(
-      (acc, item) => ({
-        ...acc,
-        [item.id]: 1, // Default quantity is 1 for all items
-      }),
-      {}
-    )
-  );
+  
   useEffect(() => {
     cart.items.forEach((item) => {
-      handleCalculateQty(item, quantities[item.id]);
+      handleCalculateQty(item, item.quantity || 1);
     });
-  }, [cart.items, quantities, handleCalculateQty]);
+  }, [cart.items, handleCalculateQty]);
 
-  const handleQtyChange = (id: string, delta: number, data: Product) => {
-    setQuantities((prev) => {
-      const currentQty = prev[id] || 1;
-      const newQty = currentQty + delta;
-
-      // Prevent exceeding stock or going below 1
-      if (newQty > data.stock) {
-        toast.info("Product out of stock!");
-        return prev; // Keep the quantity unchanged
-      }
-      if (newQty < 1) {
-        return prev; // Prevent quantity from going below 1
-      }
-
-      return {
-        ...prev,
-        [id]: newQty,
-      };
-    });
+  const handleQtyChange = (item: Product, delta: number) => {
+    const currentQty = item.quantity || 1;
+    const newQty = currentQty + delta;
+    const sizeId = item.sizes[0].id;
+    
+    // Let the cart hook handle validation
+    cart.updateQuantity(item.id, sizeId, newQty);
   };
+  
   return (
     <div className="grid grid-cols-1 gap-2">
       {cart.items.length > 0 ? (
         cart.items.map((item) => (
-          <Card key={item.id} className="flex space-x-4 p-2">
+          <Card key={`${item.id}-${item.sizes[0].id}`} className="flex space-x-4 p-2">
             <div className="relative w-[130px] h-[130px]">
               <Image
                 alt={item.name}
@@ -76,21 +57,21 @@ export default function CartItem({ handleCalculateQty }: CartItemProps) {
                 <div className="flex border p-1 space-x-4">
                   <span
                     className="cursor-pointer text-lg"
-                    onClick={() => handleQtyChange(item.id,   -1, item)}
+                    onClick={() => handleQtyChange(item, -1)}
                   >
                     -
                   </span>
-                  <span className="text-lg">{quantities[item.id] ?? 1}</span>
+                  <span className="text-lg">{item.quantity || 1}</span>
                   <span
                     className="cursor-pointer text-lg"
-                    onClick={() => handleQtyChange(item.id, 1, item)}
+                    onClick={() => handleQtyChange(item, 1)}
                   >
                     +
                   </span>
                 </div>
                 <Button
                   onClick={() => {
-                    cart.removeItem(item.id);
+                    cart.removeItem(item.id, item.sizes[0].id);
                   }}
                   variant={"destructive"}
                 >

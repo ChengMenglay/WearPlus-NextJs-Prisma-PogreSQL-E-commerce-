@@ -52,14 +52,24 @@ export default async function AppSidebar() {
       icon: ShoppingCart,
       items: [
         {
-          title: "Customer",
-          url: "/customer",
-          icon: User,
-        },
-        {
           title: "Order",
           url: "/order",
           icon: ShoppingBasket,
+        },
+        {
+          title: "Category",
+          url: `/category`,
+          icon: Package,
+        },
+        {
+          title: "Size",
+          url: `/size`,
+          icon: PencilRuler,
+        },
+        {
+          title: "Product",
+          url: `/product`,
+          icon: PackageOpen,
         },
       ],
     },
@@ -76,24 +86,14 @@ export default async function AppSidebar() {
       icon: Megaphone,
     },
     {
-      title: "Category",
-      url: `/category`,
-      icon: Package,
-    },
-    {
-      title: "Size",
-      url: `/size`,
-      icon: PencilRuler,
-    },
-    {
-      title: "Product",
-      url: `/product`,
-      icon: PackageOpen,
-    },
-    {
       title: "Delivery",
       url: `/delivery`,
       icon: Truck,
+    },
+    {
+      title: "Customer",
+      url: "/customer",
+      icon: User,
     },
   ];
   return (
@@ -134,7 +134,7 @@ export default async function AppSidebar() {
                   >
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton className="flex justify-between h-14">
-                        <span className=" space-x-4 font-bold text-lg flex items-center ">
+                        <span className=" space-x-4 font-bold text-lg flex items-center">
                           <item.icon
                             style={{ width: "20px", height: "20px" }}
                           />
@@ -150,7 +150,7 @@ export default async function AppSidebar() {
                       <SidebarMenu>
                         {item.items.map((item) => (
                           <SidebarMenuItem key={item.title} className="px-8">
-                            <SidebarMenuButton asChild>
+                            <SidebarMenuButton asChild className="h-12">
                               <a
                                 className="space-x-2 font-bold "
                                 href={"/dashboard" + item.url}
