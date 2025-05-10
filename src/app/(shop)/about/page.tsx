@@ -12,12 +12,12 @@ const About = () => {
     {
       id: 2,
       title: "Transparent Pricing",
-      description: "Our real-time marketplace works just like the stock market – allowing you to buy and sell the most coveted items at their true market price.",
+      description: "Our real-time marketplace works just like the stock market allowing you to buy and sell the most coveted items at their true market price.",
     },
     {
       id: 3,
       title: "Global Access",
-      description: "Whether it's pre-release, regionally limited, or \"sold out\" – our millions of customers from over 200 countries allow you to easily secure those hard-to-find, coveted items.",
+      description: "Whether it's pre-release, regionally limited, or \"sold out\" our millions of customers from over 200 countries allow you to easily secure those hard-to-find, coveted items.",
     },
     {
       id: 4,
@@ -44,7 +44,7 @@ const About = () => {
             The Current Culture Marketplace 
           </h1> 
           <h2 className="text-gray-100 text-sm pt-5 max-w-full md:max-w-xl lg:max-w-2xl text-center md:text-left"> 
-            Our mission is to provide access to the world's most coveted items 
+            Our mission is to provide access to the world is most coveted items 
             in the smartest way possible. Buy and sell the hottest sneakers, 
             apparel, electronics, collectibles, trading cards and accessories. 
           </h2> 

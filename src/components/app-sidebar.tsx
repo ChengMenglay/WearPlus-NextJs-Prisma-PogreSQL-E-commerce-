@@ -210,7 +210,7 @@ export default async function AppSidebar() {
               <DropdownMenuContent
                 className="w-[--radox-dropdown-menu-trigger-width] min-w-56 rounded-lg"
                 align="start"
-                side="right"
+                side="top"
                 sideOffset={8}
               >
                 <DropdownMenuLabel className="p-0 font-normal">
