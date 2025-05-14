@@ -54,7 +54,6 @@ const useCart = create(
           toast.success("Item added to cart.");
         }
       },
-
       removeItem: (id: string, sizeId?: string) => {
         // If sizeId is provided, only remove items with that specific size
         if (sizeId) {
