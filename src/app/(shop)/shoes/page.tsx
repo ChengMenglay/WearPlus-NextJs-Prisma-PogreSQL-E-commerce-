@@ -63,7 +63,11 @@ export default async function Shoes({ searchParams }: ShoesPageProps) {
     getAllCategory(),
     getUserId(),
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/product/count`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/product/count?categoryId=${
+          searchParams.brand || ""
+        }`
+      )
       .then((res) => res.data.count)
       .catch(() => 0),
   ]);
