@@ -53,7 +53,7 @@ export default function ManuLink({ categories }: ManuLinkProps) {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            href="/staionary-shop"
+            href="/stationary-shop"
             className={navigationMenuTriggerStyle()}
           >
             Stationary Shop
