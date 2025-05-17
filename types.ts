@@ -16,6 +16,7 @@ export interface Category {
   id: string;
   name: string;
   url: string | null;
+  description: string | null;
 }
 
 export interface Product {

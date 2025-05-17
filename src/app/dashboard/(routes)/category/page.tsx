@@ -12,6 +12,7 @@ export default async function CategoryPage() {
     id: item.id,
     name: item.name,
     url: item.url ? item.url : null,
+    description: item.description ?? "",
     createAt: format(item.createAt, "do, MMMM, yyyy"),
   }));
   return (

@@ -25,15 +25,30 @@ export async function PATCH(
 ) {
   try {
     const body = await req.json();
-    const { name, url } = body;
+    const { name, url, description } = body;
     if (!params.categoryId) {
       return new NextResponse("Category Id is required", { status: 400 });
     }
     if (!name) return new NextResponse("Name is required", { status: 400 });
     if (!url) return new NextResponse("Image is required", { status: 400 });
+    // Create update data object
+    const updateData: {
+      name: string;
+      url: string;
+      description?: string;
+    } = {
+      name,
+      url,
+    };
+
+    // Only include description if it's provided
+    if (description !== undefined) {
+      updateData.description = description;
+    }
+
     const category = await prisma.category.update({
       where: { id: params.categoryId },
-      data: { name, url },
+      data: updateData,
     });
     return NextResponse.json(category);
   } catch (error) {

@@ -4,10 +4,12 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, url } = body;
+    const { name, url, description } = body;
     if (!name) return NextResponse.json("Name is require", { status: 400 });
     if (!url) return NextResponse.json("Image is require", { status: 400 });
-    const category = await prisma.category.create({ data: { name, url } });
+    const category = await prisma.category.create({
+      data: { name, url, description },
+    });
     return NextResponse.json(category);
   } catch (error) {
     console.log("[CATEGORY_POST]", error);
