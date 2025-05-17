@@ -34,6 +34,7 @@ model Category{
   id String @id @default(cuid())
   name String
   url String?
+  description String?
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   products Product[]

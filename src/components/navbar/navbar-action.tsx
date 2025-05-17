@@ -4,9 +4,9 @@ import { Button } from "../ui/button";
 import { ShoppingCart } from "lucide-react";
 import useCart from "@/hooks/use-cart";
 import useOpenSheet from "@/hooks/open-sheet";
-import CartSheet from "@/app/(shop)/shoes/[shoesId]/components/CartSheet";
 import { FaRegHeart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import CartSheet from "@/app/(shop)/product/[productId]/components/CartSheet";
 
 export default function NavbarAction() {
   const cart = useCart();

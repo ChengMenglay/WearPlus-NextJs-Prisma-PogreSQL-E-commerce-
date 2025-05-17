@@ -23,7 +23,7 @@ export default function ProductCard({ product, userId }: ProductCard) {
   const hasMutipleImages = product.images.length > 1;
   const handleMouseEnter = () => {
     if (hasMutipleImages) {
-      setCurrentImageIndex(2);
+      setCurrentImageIndex(1);
     }
   };
   const handleMouseLeave = () => {
@@ -81,7 +81,7 @@ export default function ProductCard({ product, userId }: ProductCard) {
   return (
     <Card
       className="p-3 space-y-4 cursor-pointer transition-transform transform hover:scale-105 shadow-md hover:shadow-lg duration-300"
-      onClick={() => router.push(`/shoes/${product.id}`)}
+      onClick={() => router.push(`/product/${product.id}`)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

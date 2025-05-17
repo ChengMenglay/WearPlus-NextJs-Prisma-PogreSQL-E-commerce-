@@ -39,4 +39,26 @@ export const getCategoryById = async (
   }
 };
 
+export const getCategoryByName = async (
+  name: string
+): Promise<Category | null> => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/category`
+    );
+    const categories: Category[] = response.data;
+    let category = categories.find((item) => item.name === name);
+    if (!category) {
+      category = categories.find((item) => {
+        const transformedName = item.name.toLowerCase().replace(/ /g, "-");
+        return transformedName === name.toLowerCase();
+      });
+    }
+    return category || null;
+  } catch (error) {
+    console.error("Error fetching category by name:", error);
+    return null;
+  }
+};
+
 export default getAllCategory;

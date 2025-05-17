@@ -57,28 +57,59 @@ export async function GET(req: Request) {
     const isFeatured = searchParams.get("isFeatured") ? true : undefined;
     const limit = searchParams.get("limit");
     const limitValue = limit ? Number(limit) : undefined;
+    const skip = searchParams.get("skip")
+      ? parseInt(searchParams.get("skip")!)
+      : undefined;
+    const orderBy = searchParams.get("orderBy");
+    const orderDirection = searchParams.get("orderDirection");
     if (limit && isNaN(limitValue as number)) {
       return new NextResponse("Invalid limit value", { status: 400 });
     }
-    const product = await prisma.product.findMany({
-      where: {
-        id: productId,
-        categoryId,
-        sizes: sizeId ? { some: { sizeId } } : undefined,
-        isFeatured,
-        status: "Active",
-        isArchived: false,
-      },
+    const priceGte = searchParams.get('price_gte');
+    const priceLte = searchParams.get('price_lte')
+    const query: {
+      id?: string;
+      categoryId?: string;
+      isFeatured?: boolean;
+      price?: {
+        gte?: number;
+        lte?: number;
+      };
+    } = {};
+    if (productId) query.id = productId;
+    if (categoryId) query.categoryId = categoryId;
+    if (isFeatured === true) query.isFeatured = true;
+    if (priceGte || priceLte) {
+      query.price = {};
+      if (priceGte) query.price.gte = parseFloat(priceGte);
+      if (priceLte) query.price.lte = parseFloat(priceLte);
+    }
+    let orderByClause = {};
+    if (orderBy) {
+      orderByClause = { [orderBy]: orderDirection || "desc" };
+    } else {
+      orderByClause = { createAt: "desc" };
+    }
+    const products = await prisma.product.findMany({
+      where: query,
       include: {
         images: true,
         category: true,
         sizes: { include: { size: true } },
       },
       take: limitValue,
-      orderBy: { createAt: "desc" }, // Ensure `createdAt` exists in your schema
+      orderBy: orderByClause, // Ensure `createdAt` exists in your schema
+      ...(skip ? { skip: skip } : {}),
     });
 
-    return NextResponse.json(product);
+    let filterdProducts = products;
+    if (sizeId) {
+      filterdProducts = filterdProducts.filter((product) =>
+        product.sizes.some((size) => size.sizeId === sizeId)
+      );
+    }
+
+    return NextResponse.json(filterdProducts);
   } catch (error) {
     console.log("[PRODUCT_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });

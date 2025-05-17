@@ -21,7 +21,7 @@ export default function ManuLink({ categories }: ManuLinkProps) {
   const availabeProducts: { title: string; href: string }[] = [];
   const list = categories?.map((item) => ({
     title: item.name,
-    href: `/${item.name.toLowerCase()}`,
+    href: `/shoes/${item.name.toLowerCase().replace(" ", "-")}`,
   }));
   list?.map((list) => availabeProducts.push(list));
   return (

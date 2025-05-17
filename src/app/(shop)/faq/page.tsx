@@ -4,7 +4,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Plus } from "lucide-react";
 import React from "react";
 
 const faqs = [
@@ -59,9 +58,8 @@ export default function FAQ() {
       <Card className="divide-y ">
         {faqs.map((item, idx) => (
           <Collapsible key={idx} className="w-full">
-            <CollapsibleTrigger className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition">
+            <CollapsibleTrigger className="w-full p-4  text-left hover:bg-gray-100 transition">
               <span className="font-medium text-base">{item.question}</span>
-              <Plus className="h-5 w-5 text-muted-foreground" />
             </CollapsibleTrigger>
             <CollapsibleContent className="px-4 py-4 text-sm text-gray-600">
               {item.answer}

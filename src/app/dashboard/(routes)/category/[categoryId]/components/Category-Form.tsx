@@ -21,6 +21,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Category } from "@prisma/client";
 import ImageUpload from "@/components/ui/image-upload";
+import { Textarea } from "@/components/ui/textarea";
 
 type CategoryFormProps = {
   initialData: Category | null;
@@ -29,6 +30,7 @@ type CategoryFormProps = {
 const formSchema = z.object({
   name: z.string().min(1),
   url: z.string().min(1),
+  description: z.string().optional(),
 });
 type CategoryFormValues = z.infer<typeof formSchema>;
 export default function CategoryForm({ initialData }: CategoryFormProps) {
@@ -37,6 +39,7 @@ export default function CategoryForm({ initialData }: CategoryFormProps) {
     defaultValues: {
       name: initialData?.name || "",
       url: initialData?.url || "",
+      description: initialData?.description || "",
     },
   });
   const title = initialData ? "Update category" : "Create category";
@@ -113,7 +116,7 @@ export default function CategoryForm({ initialData }: CategoryFormProps) {
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-2  gap-8">
             <FormField
               control={form.control}
               name="name"
@@ -127,7 +130,21 @@ export default function CategoryForm({ initialData }: CategoryFormProps) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Category description" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
+
           <Button className="ml-auto" type="submit">
             {action}
           </Button>
