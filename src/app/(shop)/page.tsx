@@ -7,7 +7,7 @@ import FavBrand from "@/components/FavBrand";
 import getAllCategory from "../../../actions/get-category";
 import StationaryStore from "@/components/StationaryStore";
 import BrandLogo from "@/components/BrandLogo";
-
+export const dynamic = "force-dynamic";
 const HomePage = async () => {
   const [billboards, newproducts, jardan, nike, traviscott, latestBrand] =
     await Promise.all([

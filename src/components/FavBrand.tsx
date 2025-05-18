@@ -17,7 +17,7 @@ export default function FavBrand({ categories }: FavBrandProps) {
             key={category.id}
             title={category.name}
             image_url={category.url as string}
-            link={category.name.split(" ").join("_").toLowerCase()}
+            link={category.name.split(" ").join("-").toLowerCase()}
           />
         ))}
       </div>

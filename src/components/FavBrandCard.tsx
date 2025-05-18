@@ -19,7 +19,7 @@ export default function FavBrandCard({
   return (
     <div
       className="relative w-full h-[500px] cursor-pointer group-hover:opacity-100 hover:!opacity-100 transition-opacity duration-300"
-      onClick={() => router.push(`/${link}`)}
+      onClick={() => router.push(`/shoes/${link}`)}
     >
       <Image
         alt={title}

@@ -43,6 +43,7 @@ export default function ProductDetailComponent({
   product,
 }: ProductDetailProps) {
   const [seletedShoes, setSeletedShoes] = useState(product?.images[0].url);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const form = useForm<FormValues>({
@@ -85,6 +86,11 @@ export default function ProductDetailComponent({
     }
   };
 
+  const handleImageChange = (imageUrl: string) => {
+    setIsImageLoading(true);
+    setSeletedShoes(imageUrl);
+  };
+
   return (
     <>
       <CartSheet />
@@ -103,15 +109,21 @@ export default function ProductDetailComponent({
               : null}
           </p>
           <div className="mb-4 lg:w-3/4 w-full p-4">
-            <div className="relative  aspect-square">
+            <div className="relative aspect-square">
+              {isImageLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
+                  <CgSpinnerTwoAlt className="animate-spin text-3xl text-gray-600" />
+                </div>
+              )}
               <Image
                 src={seletedShoes as string}
                 alt={product?.name as string}
                 fill
                 className="object-contain object-center"
-                quality={100} // Use higher quality for better image
+                quality={85}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
+                onLoadingComplete={() => setIsImageLoading(false)}
               />
             </div>
             <h1 className="relative text-lg font-bold">Frame</h1>
@@ -119,17 +131,17 @@ export default function ProductDetailComponent({
               {product?.images.map((img) => (
                 <div
                   key={img.id}
-                  className="relative w-[140px] h-[140px] cursor-pointer"
-                  onClick={() => setSeletedShoes(img.url)}
+                  className={`relative w-[140px] h-[140px] cursor-pointer `}
+                  onClick={() => handleImageChange(img.url)}
                 >
                   <Image
                     src={img.url as string}
                     alt={img.id as string}
                     fill
                     className="object-contain object-center"
-                    quality={100} // Use higher quality for better image
-                    sizes="(max-width: 768px) 50vw, 15vw" // Responsive image sizes for better performance
-                    priority
+                    quality={60}
+                    sizes="(max-width: 768px) 50vw, 15vw"
+                    priority={seletedShoes === img.url}
                   />
                 </div>
               ))}

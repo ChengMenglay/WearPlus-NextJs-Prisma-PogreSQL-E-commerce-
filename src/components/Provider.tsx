@@ -11,7 +11,12 @@ export default function Provider({ children }: { children: ReactNode }) {
         hideProgressBar
         className={"z-[100]"}
       />
-      <NextTopLoader />
+      <NextTopLoader
+        color="#2563eb"
+        height={3}
+        showSpinner={false}
+        shadow="0 0 10px #2563eb,0 0 5px #2563eb"
+      />
       {children}
     </>
   );

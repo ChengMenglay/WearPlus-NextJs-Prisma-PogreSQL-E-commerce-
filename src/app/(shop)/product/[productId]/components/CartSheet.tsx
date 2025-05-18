@@ -1,6 +1,6 @@
 "use client";
 import useOpenSheet from "@/hooks/open-sheet";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Sheet,
   SheetContent,
@@ -14,13 +14,11 @@ import { formatter } from "@/lib/utils";
 import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { CgSpinnerTwoAlt } from "react-icons/cg";
+import { ChevronRightIcon } from "lucide-react";
 
 export default function CartSheet() {
   const { isOpen: sheetIsOpen, onOpen, onClose } = useOpenSheet();
   const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const cart = useCart();
   const router = useRouter();
 
@@ -36,19 +34,9 @@ export default function CartSheet() {
     setTotal(newTotal);
   }, [cart.items]);
 
-  const handleCheckout = () => {
-    try {
-      setIsLoading(true);
-      // No need to manipulate quantities here as they're already stored in the cart items
-      onClose();
-      router.push("/checkout");
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong that can not process the checkout!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    onClose();
+  }, [onClose, router]);
 
   return (
     <Sheet
@@ -71,9 +59,9 @@ export default function CartSheet() {
                 Total: {formatter.format(total)}
               </p>
               <div className="flex justify-end">
-                <Button disabled={isLoading} onClick={handleCheckout}>
-                  {isLoading && <CgSpinnerTwoAlt className="animate-spin" />}
-                  <span>{isLoading ? "Loading..." : "Checkout"}</span>
+                <Button onClick={() => router.push("/checkout")}>
+                  Checkout
+                  <ChevronRightIcon />
                 </Button>
               </div>
             </div>

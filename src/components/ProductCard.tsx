@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Link from "next/link";
 
 type ProductCard = {
   product: Product;
@@ -79,48 +80,62 @@ export default function ProductCard({ product, userId }: ProductCard) {
     }
   };
   return (
-    <Card
-      className="p-3 space-y-4 cursor-pointer transition-transform transform hover:scale-105 shadow-md hover:shadow-lg duration-300"
-      onClick={() => router.push(`/product/${product.id}`)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="aspect-square rounded-xl bg-gray-100 relative">
-        <Image
-          alt={product.name + product.id}
-          src={product.images[currentImageIndex]?.url || product.images[0]?.url}
-          className="object-contain transition-opacity"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+    <div className="relative transition-transform transform hover:scale-105">
+      {/* ♥ button – NOT inside the link */}
+      <button
+        onClick={handleFavoriteClick}
+        className="absolute top-4 right-4 z-50 p-1 "
+        aria-label={
+          favoriteState.isFavorite
+            ? "Remove from favourites"
+            : "Add to favourites"
+        }
+      >
         {favoriteState.isFavorite ? (
-          <FaHeart
-            className="absolute top-3 right-3 w-5 h-5 z-50 text-black cursor-pointer hover:scale-110 transition-transform"
-            onClick={handleFavoriteClick}
-          />
+          <FaHeart className="w-5 h-5 text-black hover:scale-110 transition-transform" />
         ) : (
-          <FaRegHeart
-            className="absolute top-3 right-3 w-5 h-5 z-50 text-gray-700 cursor-pointer hover:scale-110 transition-transform"
-            onClick={handleFavoriteClick}
-          />
+          <FaRegHeart className="w-5 h-5 text-gray-700 hover:scale-110 transition-transform" />
         )}
-      </div>
+      </button>
+      <Link
+        href={`/product/${product.id}`}
+        className="block" // keeps the link a block‑level element
+        prefetch // optional, auto‑prefetches on hover/in‑view
+      >
+        <Card
+          className="p-3 space-y-4 cursor-pointer shadow-md hover:shadow-lg duration-300"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="aspect-square rounded-xl bg-gray-100 relative">
+            <Image
+              alt={product.name + product.id}
+              src={
+                product.images[currentImageIndex]?.url || product.images[0]?.url
+              }
+              className="object-contain transition-opacity"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </div>
 
-      <div>
-        <h1 className="text-sm font-semibold truncate">{product.name}</h1>
-        <p className="text-xs font-semibold text-gray-400">
-          {product.type === "Men"
-            ? "Men's shoes"
-            : product.type === "Women"
-            ? "Wowen's shoes"
-            : product.type === "Kids"
-            ? "Kid's shoes"
-            : null}
-        </p>
-        <p className="text-md font-bold my-2">
-          {formatter.format(Number(product.price))}
-        </p>
-      </div>
-    </Card>
+          <div>
+            <h1 className="text-sm font-semibold truncate">{product.name}</h1>
+            <p className="text-xs font-semibold text-gray-400">
+              {product.type === "Men"
+                ? "Men's shoes"
+                : product.type === "Women"
+                ? "Wowen's shoes"
+                : product.type === "Kids"
+                ? "Kid's shoes"
+                : null}
+            </p>
+            <p className="text-md font-bold my-2">
+              {formatter.format(Number(product.price))}
+            </p>
+          </div>
+        </Card>
+      </Link>
+    </div>
   );
 }

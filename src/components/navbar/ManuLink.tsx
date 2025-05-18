@@ -45,10 +45,10 @@ export default function ManuLink({ categories }: ManuLinkProps) {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            href="/available-immediately"
+            href="/about"
             className={navigationMenuTriggerStyle()}
           >
-            Available Immediately
+            About Us
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>

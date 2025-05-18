@@ -16,7 +16,7 @@ export default function NavbarAction() {
     onOpen();
   };
   return (
-    <div className="flex space-x-2 items-center">
+    <div className="flex md:space-x-2 space-x-1 items-center">
       <CartSheet />
       <Button
         variant={"outline"}
