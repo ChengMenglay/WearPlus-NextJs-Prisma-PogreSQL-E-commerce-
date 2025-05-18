@@ -7,7 +7,7 @@ export default function Provider({ children }: { children: ReactNode }) {
   return (
     <>
       <ToastContainer
-        position="top-center"
+        position="bottom-right"
         hideProgressBar
         className={"z-[100]"}
       />
