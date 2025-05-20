@@ -39,7 +39,7 @@ export default function FilterSheet({ baseURL, categories }: FilterSheetProps) {
   const searchParams = useSearchParams();
   const [priceRange, setPriceRange] = useState([
     parseInt(searchParams.get("price_gte") || "0"),
-    parseInt(searchParams.get("price_lte") || "0"),
+    parseInt(searchParams.get("price_lte") || String(MAX_PRICE)),
   ]);
   const isPriceFiltered =
     searchParams.has("price_gte") || searchParams.has("price_lte");
@@ -159,6 +159,7 @@ export default function FilterSheet({ baseURL, categories }: FilterSheetProps) {
             <Slider
               onValueChange={setPriceRange}
               value={priceRange}
+              min={0}
               max={MAX_PRICE}
               step={10}
             />

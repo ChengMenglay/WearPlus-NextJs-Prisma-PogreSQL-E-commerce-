@@ -88,6 +88,10 @@ export default function ProductForm({
   const onSubmit = async (data: ProductFormValues) => {
     try {
       if (initialData) {
+        if(data.stock<=0){
+          toast.error("Stock must be greater than 0");
+          return;
+        }
         setIsLoading(true);
         await axios.patch(`/api/product/${initialData.id}`, data);
       } else {

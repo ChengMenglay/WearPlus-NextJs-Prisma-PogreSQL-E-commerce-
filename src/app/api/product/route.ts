@@ -65,17 +65,18 @@ export async function GET(req: Request) {
     if (limit && isNaN(limitValue as number)) {
       return new NextResponse("Invalid limit value", { status: 400 });
     }
-    const priceGte = searchParams.get('price_gte');
-    const priceLte = searchParams.get('price_lte')
+    const priceGte = searchParams.get("price_gte");
+    const priceLte = searchParams.get("price_lte");
     const query: {
       id?: string;
       categoryId?: string;
       isFeatured?: boolean;
+      isArchived?: boolean;
       price?: {
         gte?: number;
         lte?: number;
       };
-    } = {};
+    } = { isArchived: false };
     if (productId) query.id = productId;
     if (categoryId) query.categoryId = categoryId;
     if (isFeatured === true) query.isFeatured = true;

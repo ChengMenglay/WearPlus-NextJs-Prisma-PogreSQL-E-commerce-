@@ -12,6 +12,7 @@ interface ProductClientProps {
 }
 export const ClientProduct: FC<ProductClientProps> = ({ data }) => {
   const router = useRouter();
+  const [filterdProduct, setFilterdProduct] = React.useState(data);
   return (
     <>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -20,12 +21,22 @@ export const ClientProduct: FC<ProductClientProps> = ({ data }) => {
           total={data.length}
           subtitle="Manage products for your store."
         />
-        <Button onClick={() => router.push(`/dashboard/product/new`)}>
-          Add New
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={"destructive"}
+            onClick={() =>
+              setFilterdProduct(data.filter((item) => item.stock < 10))
+            }
+          >
+            Low Stock
+          </Button>
+          <Button onClick={() => router.push(`/dashboard/product/new`)}>
+            Add New
+          </Button>
+        </div>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable searchKey="name" columns={columns} data={filterdProduct} />
     </>
   );
 };

@@ -100,7 +100,7 @@ function getStatusColor(status: string): string {
 
 // Helper function to calculate percentage change
 function calculateTrend(current: number, previous: number): number {
-  if (previous === 0) return 0;
+  if (previous === 0) return current > 0 ? 100 : 0;
   return Math.round(((current - previous) / previous) * 100);
 }
 
@@ -237,7 +237,7 @@ export default async function Dashboard() {
     where: { status: "Canceled" },
   });
 
-  const year = 2025;
+  const year = new Date().getFullYear();
 
   const salesData = await Promise.all(
     Array.from({ length: 12 }).map(async (_, i) => {

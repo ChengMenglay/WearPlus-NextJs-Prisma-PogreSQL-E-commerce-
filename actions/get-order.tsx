@@ -12,3 +12,13 @@ export const getOrderHistory = async (userId: string): Promise<Order[]> => {
     return [];
   }
 };
+
+export const getPendingOrder = async (userId:string): Promise<Order[]> => {
+  try {
+    const response = await axios.get(`${URL}/pending?userId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
