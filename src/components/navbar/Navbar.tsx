@@ -9,6 +9,7 @@ import getAllCategory from "../../../actions/get-category";
 import NavbarAction from "./navbar-action";
 import MobileNavSheet from "./MobileNavSheet";
 import MobileNavTrigger from "./MobileNavTrigger";
+import { Button } from "../ui/button";
 
 export default async function Navbar() {
   const session = await auth();
@@ -16,13 +17,13 @@ export default async function Navbar() {
   const categories = await getAllCategory();
 
   return (
-    <Card className="w-full h-16 rounded-none sticky top-0 z-50 flex justify-center px-4">
+    <Card className="w-full h-16 rounded-none sticky top-0 z-50 flex justify-center px-2">
       <div className="container h-full flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center md:space-x-2">
           {/* Mobile menu button - only visible on small screens */}
           <MobileNavTrigger />
 
-          <Link href="/" className="font-bold text-black text-2xl sm:text-2xl">
+          <Link href="/" className="font-bold text-black text-xl sm:text-2xl">
             WEARPLUS
           </Link>
         </div>
@@ -41,9 +42,9 @@ export default async function Navbar() {
               role={users.role}
             />
           ) : (
-            <Link href={"/login"} className="hidden md:block">
-              Login
-            </Link>
+            <Button variant="outline" asChild>
+              <Link href={"/login"}>Login</Link>
+            </Button>
           )}
         </div>
       </div>
