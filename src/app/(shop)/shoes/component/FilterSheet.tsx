@@ -44,7 +44,6 @@ export default function FilterSheet({ baseURL, categories }: FilterSheetProps) {
   const isPriceFiltered =
     searchParams.has("price_gte") || searchParams.has("price_lte");
   const currentSort = searchParams.get("sort") || "featured";
-  const currentPage = searchParams.get("page") || "1";
   const currentBrand = searchParams.get("brand") || "";
   const sortOptions: SortOption[] = [
     { label: "Featured", value: "featured" },
@@ -58,23 +57,21 @@ export default function FilterSheet({ baseURL, categories }: FilterSheetProps) {
   const handleBrandChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("brand", value);
+    params.delete("page");
     router.push(`${baseURL}?${params.toString()}`);
   };
   const handleSortChange = (value: string) => {
     //Contruct new URL with sort parameter
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", value);
-
-    //Keep the current page if it exits
-    if (currentPage !== "1") {
-      params.set("page", currentPage);
-    }
+    params.delete("page");
     router.push(`${baseURL}?${params.toString()}`);
   };
   const resetPriceFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("price_gte");
     params.delete("price_lte");
+    params.delete("page");
     setPriceRange([0, MAX_PRICE]);
     router.push(`${baseURL}?${params.toString()}`);
   };
@@ -82,6 +79,7 @@ export default function FilterSheet({ baseURL, categories }: FilterSheetProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("price_gte", priceRange[0].toString());
     params.set("price_lte", priceRange[1].toString());
+    params.delete("page");
     router.push(`${baseURL}?${params.toString()}`);
   };
   return (

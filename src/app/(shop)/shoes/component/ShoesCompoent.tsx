@@ -47,7 +47,7 @@ export default function ShoesCompoent({
           <NoResult />
         )}
       </div>
-      {totalPages > 1 && (
+      {totalPages > 1 && products.length >= 12 && (
         <div className="my-4">
           <PaginationShoes
             currentPage={currentPage}
